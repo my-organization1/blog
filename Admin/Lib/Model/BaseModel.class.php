@@ -6,8 +6,6 @@
  * @copyright 2015 blog
  */
 
-namespace Admin\Model;
-
 class BaseModel extends Model
 {
     public function _initialize()
@@ -43,7 +41,7 @@ class BaseModel extends Model
     }
 
     /**
-     * 获取单挑数据
+     * 获取单条数据
      * @method _get
      * @param  array  $map   查询条件
      * @param  string $field 查询字段

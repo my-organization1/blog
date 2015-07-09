@@ -7,9 +7,6 @@
  * @author guolei <2387813033@qq.com>
  */
 
-namespace Admin\Action;
-
 class IndexAction extends BaseAction
 {
-
 }
