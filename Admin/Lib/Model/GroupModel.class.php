@@ -11,4 +11,6 @@
 class GroupModel extends BaseModel
 {
     protected $tableName = 'group';
+
+
 }

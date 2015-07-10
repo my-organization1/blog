@@ -50,6 +50,47 @@ class LoginAction extends Action
 
         $username = I('post.username');
         $password = I('post.password');
+        $redirect_url = I('post.redirect_url','');
+
+        if (empty($username)) {
+            $this->error('请输入用户名');
+        }
+
+        if (empty($password)) {
+            $this->error('请输入密码');
+        }
+
+        $model = D('Admin');
+
+        $admin_info = $model->login($username,$password);
+
+        if($admin_info === false){      //登陆失败
+            $error = $model->getError();
+            switch($error){
+                case 9001:
+                    $error_msg = '会员不存在或已被禁用';
+                    break;
+                case 9002:
+                    $error_msg = '请输入正确的密码';
+                    break;
+                default:
+                    $error_msg = '登陆失败';
+            }
+            D('LoginLog')->writeLog($username,$password);
+            $this->error($error_msg);
+        }
+
+        //写入session
+        session('uid', $admin_info['id']);
+        session('gid', $admin_info['group_id']);
+        session('nickname', $admin_info['nickname']);
+
+        //写入log表
+        D('LoginLog')->writeLog($username,$password);
+
+        $redirect_url = empty($redirect_url)?U('Index/index'):urldecode($redirect_url);
+
+        redirect($redirect_url);    //跳转到指定页面
     }
 
     /**

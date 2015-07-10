@@ -10,7 +10,12 @@ class BaseAction extends Action
 {
     public function _initialize()
     {
+        $uid = session('uid');
 
+        if(empty($uid)){    //判断登陆
+            redirect(U('Login/login'));
+        }
+        //判断权限
     }
 
     /**
