@@ -7,6 +7,7 @@
  * @copyright 2015 blog
  *
  */
+
 class LoginLogModel extends BaseModel
 {
     protected $tableName = 'login_log';
@@ -17,11 +18,13 @@ class LoginLogModel extends BaseModel
      * @param  string $password 登陆密码
      * @return bool             是否成功
      */
-    public function writeLog($username, $password = ''){
+    public function writeLog($username, $password = null)
+    {
         $data['username'] = $username;
         $data['password'] = $password;
         $data['ip'] = get_client_ip();
         $data['is_success'] = empty($password)?1:0;
+        $data['create_time'] = TimeHelper::now();
 
         $ins = $this->add($data);
 

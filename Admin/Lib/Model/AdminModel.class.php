@@ -1,4 +1,13 @@
 <?php
+/**
+ * 管理员Model
+ *
+ * @package Model
+ * @author guolei <2387813033@qq.com>
+ * @copyright 2015 blog
+ *
+ */
+
 class AdminModel extends BaseModel
 {
     protected $tableName = 'admin';
@@ -17,7 +26,7 @@ class AdminModel extends BaseModel
 
         $field = 'id,group_id,username,password,salt,name,sex,age,mobile,email,is_enable,create_time';
 
-        $info = $this->_get($map,$field);
+        $info = $this->_get($map, $field);
 
         if (empty($info)) {   //会员不存在或被禁用
             $this->error = 9001;

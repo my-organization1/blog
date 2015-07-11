@@ -6,35 +6,24 @@
  * @author guolei <238713033@qq.com>
  * @copyright 2015 blog
  */
+
 class LoginAction extends Action
 {
-    //不用检测登录状态的方法
-    private $not_check_login_func = array('logout');
-    /**
-     * 初始化,判断登录状态
-     */
-    public function _initialize()
-    {
-        if (!in_array(ACTION_NAME, $this->not_check_login_func)) {
-            $uid = session('uid');
-            if (empty($uid)) {
-                redirect(U('login'));
-                exit();
-            }
-
-            //登录状态跳转到指定地址
-            $redirect_url = I('redirect_url', '');
-            $redirect_url = empty($redirect_url)?U('Index/index'):urldecode($redirect_url);
-            redirect($redirect_url);
-        }
-    }
-
     /**
      * 登录页面
      * @method login
      */
     public function login()
     {
+        $uid = session('uid');
+        if (!empty($uid)) {
+            //登录状态跳转到指定地址
+            $redirect_url = I('redirect_url', '');
+            $redirect_url = empty($redirect_url)?U('Index/index'):urldecode($redirect_url);
+            redirect($redirect_url);
+            exit();
+        }
+
         $this->display();
     }
 
@@ -50,7 +39,7 @@ class LoginAction extends Action
 
         $username = I('post.username');
         $password = I('post.password');
-        $redirect_url = I('post.redirect_url','');
+        $redirect_url = I('post.redirect_url', '');
 
         if (empty($username)) {
             $this->error('请输入用户名');
@@ -62,11 +51,11 @@ class LoginAction extends Action
 
         $model = D('Admin');
 
-        $admin_info = $model->login($username,$password);
+        $admin_info = $model->login($username, $password);
 
-        if($admin_info === false){      //登陆失败
+        if ($admin_info === false) {      //登陆失败
             $error = $model->getError();
-            switch($error){
+            switch ($error) {
                 case 9001:
                     $error_msg = '会员不存在或已被禁用';
                     break;
@@ -76,7 +65,7 @@ class LoginAction extends Action
                 default:
                     $error_msg = '登陆失败';
             }
-            D('LoginLog')->writeLog($username,$password);
+            D('LoginLog')->writeLog($username, $password);
             $this->error($error_msg);
         }
 
@@ -85,12 +74,17 @@ class LoginAction extends Action
         session('gid', $admin_info['group_id']);
         session('nickname', $admin_info['nickname']);
 
+        //获取权限并且写入session
+        $node_list = D('Node')->getListByGroupId($admin_info['group_id']);
+        $node_list = array_column($node_list, 'node');
+        session('node_list', $node_list);
+
         //写入log表
-        D('LoginLog')->writeLog($username,$password);
+        D('LoginLog')->writeLog($username);
 
         $redirect_url = empty($redirect_url)?U('Index/index'):urldecode($redirect_url);
 
-        redirect($redirect_url);    //跳转到指定页面
+        $this->success('登录成功', $redirect_url);
     }
 
     /**
@@ -100,5 +94,6 @@ class LoginAction extends Action
     public function logout()
     {
         session(null);
+        redirect(U('Login/login'));
     }
 }
