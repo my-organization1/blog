@@ -76,7 +76,7 @@ class LoginAction extends Action
 
         //获取权限并且写入session
         $node_list = D('Node')->getListByGroupId($admin_info['group_id']);
-        $node_list = array_column($node_list, 'node');
+
         session('node_list', $node_list);
 
         //写入log表

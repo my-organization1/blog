@@ -24,7 +24,7 @@ class AdminModel extends BaseModel
         $map['username'] = $username;
         $map['is_enable'] = 1;
 
-        $field = 'id,group_id,username,password,salt,name,sex,age,mobile,email,is_enable,create_time';
+        $field = 'id,group_id,username,nickname,password,salt,name,sex,age,mobile,email,is_enable,create_time';
 
         $info = $this->_get($map, $field);
 

@@ -20,19 +20,25 @@ class NodeModel extends BaseModel
      */
     public function getListByGroupId($group_id)
     {
-        //获取拥有的节点id
-        $map['group_id'] = $group_id;
-        $field = 'group_id,node_id';
-        $node_id_list = D('GroupNodeMap')->_list($map, $field);
+        //超级管理员组获取所有节点
+        if ($group_id == 1) {
+            $node_map = array();
+        } else {
+            //获取拥有的节点id
+            $map['group_id'] = $group_id;
+            $field = 'group_id,node_id';
+            $node_id_list = D('GroupNodeMap')->_list($map, $field);
 
-        if (empty($node_id_list)) {
-            return array();
+            if (empty($node_id_list)) {
+                return array();
+            }
+            //获取节点列表
+            $node_map['id'] = array_column($node_id_list, 'node_id');
         }
-        //获取节点列表
-        $node_map['id'] = array_column($node_id_list, 'node_id');
-        $field = 'id,pid,node,name';
 
-        $list = $this->_list($map, $field);
+        $field = 'id,pid,node,name,is_show';
+
+        $list = $this->_list($node_map, $field, 'id asc');
 
         return $list;
     }
