@@ -43,10 +43,11 @@ class BaseAction extends Action
 
         $map = method_exists($this, '_filter') ? $this->_filter() : array();
         $order = $this->order ? $this->order : '';
-        $page = $this->is_page == true ? I('page') : 0 ;
+        $page = $this->is_page == true ? I('page', 1) : 0 ;
         $page_size = 10 ;
 
         $list = $model->_list($map, $field, $order, $page, $page_size);
+
         $this->assign('list', $list);
         $this->display();
     }
@@ -64,7 +65,7 @@ class BaseAction extends Action
     {
         $model = D(MODULE_NAME);
 
-        if (!$model->create()) {
+        if (!$model->create(I('post.'), 1)) {
             $this->error($model->getError());
         }
 
@@ -81,7 +82,7 @@ class BaseAction extends Action
     protected function _after_save($ins)
     {
         if ($ins) {
-            $this->success('新增成功', MODULE_NAME.'/index');
+            $this->success('新增成功', U(MODULE_NAME.'/index'));
         } else {
             $this->error('新增失败,请稍后再试');
         }
@@ -108,7 +109,7 @@ class BaseAction extends Action
     {
         $model = D(MODULE_NAME);
 
-        if (!$model->create()) {
+        if (!$model->create(I('post.'), 2)) {
             $this->error($model->getError());
         }
 
@@ -130,7 +131,7 @@ class BaseAction extends Action
     protected function _after_update($update_result)
     {
         if ($update_result) {
-            $this->success('更新成功', MODULE_NAME.'/index');
+            $this->success('更新成功', U(MODULE_NAME.'/index'));
         } else {
             $this->error('更新失败,请稍后再试');
         }
@@ -161,7 +162,7 @@ class BaseAction extends Action
     protected function _after_del($del_result)
     {
         if ($del_result) {
-            $this->success('删除成功', MODULE_NAME.'/index');
+            $this->success('删除成功', U(MODULE_NAME.'/index'));
         } else {
             $this->error('删除失败,请稍后再试');
         }
@@ -181,6 +182,7 @@ class BaseAction extends Action
         $is_enable = I('is_enable');
 
         $set_result = $model->where($map)->setField('is_enable', $is_enable);
+
         $this->_after_isEnable($set_result);
     }
 
@@ -193,7 +195,7 @@ class BaseAction extends Action
     protected function _after_isEnable($set_result)
     {
         if ($set_result) {
-            $this->success('设置成功', MODULE_NAME.'/index');
+            $this->success('设置成功', U(MODULE_NAME.'/index'));
         } else {
             $this->error('设置失败,请稍后再试');
         }

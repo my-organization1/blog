@@ -12,6 +12,23 @@ class AdminModel extends BaseModel
 {
     protected $tableName = 'admin';
 
+    protected $_validate = array(
+        array('username', 'require', '请输入用户名'),
+        array('password', 'require', '请输入密码')
+    );
+
+    protected $_auto = array(
+        array('is_enable', 'auto_post', 1, 'function','1'),
+        array('create_time', 'now', 1, 'function'),
+        array('modification_time', 'now', 3, 'function')
+    );
+
+    protected function auto_post($arg)
+    {
+        $val = I('post.'.$arg[0]);
+        return isset($val) ? $val : $arg[1];
+    }
+
     /**
      * 登陆方法
      * @param  string $username 用户名
