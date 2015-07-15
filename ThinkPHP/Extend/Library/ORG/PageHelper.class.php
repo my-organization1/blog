@@ -21,37 +21,51 @@ class PageHelper
     public function show()
     {
         $page_list = array();
-        $page_total = ceil($this->total/$this->page_size);
-
+        $page_total = intval(ceil($this->total/$this->page_size));
 
         //将首页写入数组
         $page_first['name'] = $this->theme_first;
         $page_first['page'] = 1;
+        if ($this->page <= $this->page_roll) {
+            $page_first['status'] = 'disabled';
+        }
         array_push($page_list, $page_first);
 
         //将第一页写入数组
         $page_prev['name'] = $this->theme_prev;
-        $page_prev['page'] = '-1';
+        $page_prev['page'] = $this->page - 1 <= 0 ? 1 : $this->page - 1;
+        if ($this->page <= $this->page_roll) {
+            $page_prev['status'] = 'disabled';
+        }
         array_push($page_list, $page_prev);
 
-
-        for ($i=1; $i<=$page_total; $i++) {
+        $now_max_page = ($this->page_roll+$this->page-1) > $page_total ? $page_total : $this->page_roll+$this->page-1;
+        for ($i=$this->page; $i<=$now_max_page; $i++) {
             $page['name'] = $i;
             $page['page'] = $i;
-            array_push($page_list, $page);
-            if (count($page_list)-2 == $this->page_roll) {
-                break;
+
+            if ($this->page === $i) {
+                $page['status'] = 'now';
+            } else {
+                unset($page['status']);
             }
+            array_push($page_list, $page);
         }
 
         //将下一页写入数组
         $page_next['name'] = $this->theme_next;
-        $page_next['page'] = '+1';
+        $page_next['page'] = $this->page + 1 >= $page_total ? $page_total : $this->page + 1;
+        if ($this->page > $page_total - $this->page_roll) {
+            $page_next['status'] = 'disabled';
+        }
         array_push($page_list, $page_next);
 
         //将最后一页写入数组
         $page_last['name'] = $this->theme_last;
         $page_last['page'] = $page_total;
+        if ($this->page > $page_total - $this->page_roll) {
+            $page_last['status'] = 'disabled';
+        }
         array_push($page_list, $page_last);
 
         return $page_list;

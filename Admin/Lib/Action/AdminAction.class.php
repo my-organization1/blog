@@ -9,16 +9,34 @@
  */
 class AdminAction extends BaseAction
 {
-    protected function _before_add()
+    public function _before_add()
     {
         $group_list = D('Group')->_list();
+        $this->assign('group_list',$group_list);
     }
 
-    protected function _before_edit()
+    public function _before_edit()
     {
         $this->_before_add();
     }
 
+    public function _before_isEnable()
+    {
+        $id = I('get.id');
+
+        if ($id === 1) {
+            $this->error('不可禁用默认用户');
+        }
+    }
+
+    public function _before_del()
+    {
+        $id = I('get.id');
+
+        if ($id === 1) {
+            $this->error('不可删除默认用户');
+        }
+    }
 
     /**
      * 新增管理员
@@ -45,6 +63,9 @@ class AdminAction extends BaseAction
         $this->_after_save($ins);
     }
 
+    /**
+     * 更新管理员信息
+     */
     public function update()
     {
         $model = D(MODULE_NAME);
