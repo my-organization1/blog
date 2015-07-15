@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+   <meta charset="utf-8" />
+   <title>{:C('ADMIN_TITLE')}</title>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+   <meta content="" name="description" />
+   <meta content="" name="author" />
+  <include file="Public/style" />
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="fixed-top">
+   <!-- BEGIN HEADER -->
+    <include file="Public/header" />
+   <!-- END HEADER -->
+   <!-- BEGIN CONTAINER -->
+   <div id="container" class="row-fluid">
+      <!-- BEGIN SIDEBAR -->
+      <div class="sidebar-scroll">
+          <div id="sidebar" class="nav-collapse collapse">
+
+              <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+              <div class="navbar-inverse">
+                  <form class="navbar-search visible-phone">
+                      <input type="text" class="search-query" placeholder="Search" />
+                  </form>
+              </div>
+              <!-- END RESPONSIVE QUICK SEARCH FORM -->
+              <!-- BEGIN SIDEBAR MENU -->
+              <include file="Public/menu" />
+              <!-- END SIDEBAR MENU -->
+          </div>
+      </div>
+      <!-- END SIDEBAR -->
+      <!-- BEGIN PAGE -->
+      <div id="main-content">
+         <!-- BEGIN PAGE CONTAINER-->
+         <div class="container-fluid">
+            <!-- BEGIN PAGE HEADER-->
+            <div class="row-fluid">
+               <div class="span12">
+                  <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                   <h3 class="page-title">
+                     管理员管理
+                   </h3>
+                   <ul class="breadcrumb">
+                       <li>
+                           <a href="{:U('/')}">后台首页</a>
+                           <span class="divider">/</span>
+                       </li>
+                       <li>
+                           <a href="{:U('Admin/index')}">管理员列表</a>
+                       </li>
+                   </ul>
+                   <!-- END PAGE TITLE & BREADCRUMB-->
+               </div>
+            </div>
+            <!-- END PAGE HEADER-->
+            <!-- BEGIN PAGE CONTENT-->
+            <div class="row-fluid">
+                    <div class="span12">
+                        <!-- BEGIN BASIC PORTLET-->
+                        <div class="widget">
+                            <div class="widget-title">
+                                <h4><i class="icon-reorder"></i>管理员列表</h4>
+                            <span class="tools">
+                                <a href="javascript:;" class="icon-chevron-down"></a>
+                                <a href="javascript:;" class="icon-remove"></a>
+                            </span>
+                            </div>
+                            <div class="widget-body">
+                            <p><a href="{:U('add')}" class="btn btn-large btn-primary">新增管理员</a></p>
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>用户ID</th>
+                                        <th>用户名</th>
+                                        <th>昵称</th>
+                                        <th>姓名</th>
+                                        <th>性别</th>
+                                        <th>年龄</th>
+                                        <th>手机号</th>
+                                        <th>邮箱</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <volist name="list" id="vo">
+                                      <tr>
+                                        <td>
+                                          {$vo.id}
+                                        </td>
+                                        <td>{$vo.username}</td>
+                                        <td>{$vo.nickname}</td>
+                                        <td>{$vo.name}</td>
+                                        <td><switch name="vo.sex">
+                                          <case value="1">男</case>
+                                          <case value="2">女</case>
+                                          <case value="3">保密</case>
+                                        </switch></td>
+                                        <td>{$vo.age}</td>
+                                        <td>{$vo.mobile}</td>
+                                        <td>{$vo.email}</td>
+                                        <td>
+                                          <eq name="vo.is_enable" value="1">
+                                            <a href="{:U('isEnable',array('id'=>$vo['id'],'is_enable'=>0))}" class="btn btn-success" onclick="return AjaxBtn(this)"><i class="icon-ok tooltips" data-placement="top" data-original-title="点击禁用"></i></a>
+                                          </eq>
+                                          <eq name="vo.is_enable" value="0">
+                                            <a href="{:U('isEnable',array('id'=>$vo['id'],'is_enable'=>1))}" class="btn btn-warning" onclick="return AjaxBtn(this)"><i class="icon-remove tooltips" data-placement="top" data-original-title="点击启用"></i></a>
+                                          </eq>
+                                        </td>
+                                        <td>
+                                        <a href="{:U('edit',array('id'=>$vo['id']))}" class="btn btn-primary"><i class="icon-pencil tooltips" data-placement="top" data-original-title="点击编辑"></i></a>
+                                        <a href="{:U('del',array('id'=>$vo['id']))}" class="btn btn-danger" onclick="return AjaxBtn(this)"><i class="icon-trash tooltips" data-placement="top" data-original-title="点击删除"></i></a>
+                                        </td>
+                                    </tr>
+                                    </volist>
+                                    </tbody>
+                                </table>
+                                <div class="pagination">
+                                <ul>
+                                    <li><a href="general.html#">«</a></li>
+                                    <li><a href="general.html#">1</a></li>
+                                    <li><a href="general.html#">2</a></li>
+                                    <li><a href="general.html#">3</a></li>
+                                    <li><a href="general.html#">4</a></li>
+                                    <li><a href="general.html#">»</a></li>
+                                </ul>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- END BASIC PORTLET-->
+                    </div>
+                </div>
+            <!-- END PAGE CONTENT-->
+         </div>
+         <!-- END PAGE CONTAINER-->
+      </div>
+      <!-- END PAGE -->
+   </div>
+   <!-- END CONTAINER -->
+
+   <!-- BEGIN FOOTER -->
+    <include file="Public/footer" />
+    <include file="Public/script" />
+   <!-- END FOOTER -->
+</body>
+<!-- END BODY -->
+</html>

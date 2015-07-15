@@ -31,13 +31,16 @@ class PageHelper
 
         //将第一页写入数组
         $page_prev['name'] = $this->theme_prev;
-        $page_prev['page'] = '-1';
+        $page_prev['page'] = $this->page - 1 >= 1 ? $this->page : 1;
         array_push($page_list, $page_prev);
 
 
         for ($i=1; $i<=$page_total; $i++) {
             $page['name'] = $i;
             $page['page'] = $i;
+            if ($i == $this->page) {
+                $page['status'] = 'now';
+            }
             array_push($page_list, $page);
             if (count($page_list)-2 == $this->page_roll) {
                 break;
@@ -46,7 +49,7 @@ class PageHelper
 
         //将下一页写入数组
         $page_next['name'] = $this->theme_next;
-        $page_next['page'] = '+1';
+        $page_next['page'] = $this->page + 1 <= $total ? $this->page : $page_total;
         array_push($page_list, $page_next);
 
         //将最后一页写入数组
