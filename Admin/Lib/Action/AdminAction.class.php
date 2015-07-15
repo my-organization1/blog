@@ -12,7 +12,7 @@ class AdminAction extends BaseAction
     public function _before_add()
     {
         $group_list = D('Group')->_list();
-        $this->assign('group_list',$group_list);
+        $this->assign('group_list', $group_list);
     }
 
     public function _before_edit()
@@ -22,7 +22,7 @@ class AdminAction extends BaseAction
 
     public function _before_isEnable()
     {
-        $id = I('get.id');
+        $id = intval(I('get.id'));
 
         if ($id === 1) {
             $this->error('不可禁用默认用户');
@@ -31,7 +31,7 @@ class AdminAction extends BaseAction
 
     public function _before_del()
     {
-        $id = I('get.id');
+        $id = intval(I('get.id'));
 
         if ($id === 1) {
             $this->error('不可删除默认用户');

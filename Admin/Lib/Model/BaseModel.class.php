@@ -58,4 +58,10 @@ class BaseModel extends Model
 
         return $find;
     }
+
+    public function _count($map = array())
+    {
+        $count = $this->where($map)->count();
+        return empty($count) ? 0 : $count;
+    }
 }

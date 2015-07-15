@@ -24,7 +24,7 @@ class PageHelper
         $page_total = intval(ceil($this->total/$this->page_size));
 
         //将首页写入数组
-        $page_first['name'] = $this->theme_first;
+        $page_first['name'] = 'first';
         $page_first['page'] = 1;
         if ($this->page <= $this->page_roll) {
             $page_first['status'] = 'disabled';
@@ -32,16 +32,17 @@ class PageHelper
         array_push($page_list, $page_first);
 
         //将第一页写入数组
-        $page_prev['name'] = $this->theme_prev;
+        $page_prev['name'] = 'prev';
         $page_prev['page'] = $this->page - 1 <= 0 ? 1 : $this->page - 1;
         if ($this->page <= $this->page_roll) {
             $page_prev['status'] = 'disabled';
         }
         array_push($page_list, $page_prev);
 
+        //写入分页列表
         $now_max_page = ($this->page_roll+$this->page-1) > $page_total ? $page_total : $this->page_roll+$this->page-1;
         for ($i=$this->page; $i<=$now_max_page; $i++) {
-            $page['name'] = $i;
+            $page['name'] = 'list';
             $page['page'] = $i;
 
             if ($this->page === $i) {
@@ -53,7 +54,7 @@ class PageHelper
         }
 
         //将下一页写入数组
-        $page_next['name'] = $this->theme_next;
+        $page_next['name'] = 'next';
         $page_next['page'] = $this->page + 1 >= $page_total ? $page_total : $this->page + 1;
         if ($this->page > $page_total - $this->page_roll) {
             $page_next['status'] = 'disabled';
@@ -61,7 +62,7 @@ class PageHelper
         array_push($page_list, $page_next);
 
         //将最后一页写入数组
-        $page_last['name'] = $this->theme_last;
+        $page_last['name'] = 'total';
         $page_last['page'] = $page_total;
         if ($this->page > $page_total - $this->page_roll) {
             $page_last['status'] = 'disabled';

@@ -266,8 +266,8 @@ textarea, select, input[type="text"], input[type="password"], input[type="dateti
 
 .form-horizontal .control-label {
     text-align: left;
+    padding-left: 30px;
 }
-
 
 /* general typography*/
 h3 small, h2 small, h5 small {

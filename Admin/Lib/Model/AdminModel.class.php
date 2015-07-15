@@ -14,20 +14,17 @@ class AdminModel extends BaseModel
 
     protected $_validate = array(
         array('username', 'require', '请输入用户名'),
-        array('password', 'require', '请输入密码')
+        array('password', 'require', '请输入密码', 0, 'regex', 1),
+        array('password', '6,16', '密码长度最短6位，最长16位', 2, 'length'),
+        array('sex', array(1,2,3), '性别选择错误', 3, 'in')
+
     );
 
     protected $_auto = array(
-        array('is_enable', 'auto_post', 1, 'function','1'),
+        array('is_enable', 1, 1, 'string'),
         array('create_time', 'now', 1, 'function'),
         array('modification_time', 'now', 3, 'function')
     );
-
-    protected function auto_post($arg)
-    {
-        $val = I('post.'.$arg[0]);
-        return isset($val) ? $val : $arg[1];
-    }
 
     /**
      * 登陆方法

@@ -47,8 +47,18 @@ class BaseAction extends Action
         $page_size = 10 ;
 
         $list = $model->_list($map, $field, $order, $page, $page_size);
+        $count = $model->_count($map);
 
+        $PageHelper  = new PageHelper($count, $page, $page_size);
+        $pageList = $PageHelper->show();
+
+        $param = array_merge($_GET, array('page'=>$page, 'page_size'=>$page_size));
+        unset($param['_URL_']);
+        $this->assign('param', $param);
+        $this->assign('page', $page);
+        $this->assign('page_size', $page_size);
         $this->assign('list', $list);
+        $this->assign('pageList', $pageList);
         $this->display();
     }
 
@@ -115,7 +125,7 @@ class BaseAction extends Action
 
         $pk = $model->getPk();
 
-        $map[$pk] = I('post.'.$pk);
+        $map[$pk] = intval(I('post.'.$pk));
 
         $update_result = $model->where($map)->save();
 
@@ -147,7 +157,7 @@ class BaseAction extends Action
 
         $pk = $model->getPk();
 
-        $map[$pk] = I($pk);
+        $map[$pk] = intval(I($pk));
 
         $del_result = $model->where($map)->delete();
 
@@ -178,7 +188,7 @@ class BaseAction extends Action
 
         $pk = $model->getPk();
 
-        $map[$pk] = I($pk);
+        $map[$pk] = intval(I($pk));
         $is_enable = I('is_enable');
 
         $set_result = $model->where($map)->setField('is_enable', $is_enable);

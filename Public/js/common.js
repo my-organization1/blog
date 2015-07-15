@@ -20,6 +20,10 @@ $(function(){
             });
         }
     })
+    //单选和多选框样式
+    $("input[type=radio],input[type=checkbox]").uniform();
+    //下拉框效果
+    $(".chzn-select").chosen(); $(".chzn-select-deselect").chosen({allow_single_deselect:true});
 })
 
 //ajax提交表单
@@ -38,6 +42,7 @@ function AjaxForm(dom){
                 window.location.href = i.url;
             }else{
                 showAlert('发生错误了',i.info);
+                return false;
             }
         }
     })
@@ -46,7 +51,6 @@ function AjaxForm(dom){
 
 //Ajax按钮提交
 function AjaxBtn(dom){
-
     if($(dom).attr('disabled')){
         return false;
     }
@@ -91,7 +95,7 @@ function showAlert(title,msg){
         title: title,
         content: msg,
         width:'400',
-        okValue: '确定',
+        Value: '确定',
         ok: function () {}
     });
     d.showModal();

@@ -54,11 +54,11 @@
          <span class="divider">/</span>
        </li>
        <li>
-         <a href="{:U('Admin/index')}">管理员列表</a>
+         <a href="{:U('Admin/index')}">管理组列表</a>
          <span class="divider">/</span>
        </li>
        <li>
-         <a href="__SELF__">新增管理员</a>
+         <a href="__SELF__">新增管理组</a>
        </li>
      </ul>
      <!-- END PAGE TITLE & BREADCRUMB-->
@@ -71,7 +71,7 @@
     <!-- BEGIN BASIC PORTLET-->
     <div class="widget">
       <div class="widget-title">
-        <h4><i class="icon-reorder"></i>新增管理员</h4>
+        <h4><i class="icon-reorder"></i>新增管理组</h4>
         <span class="tools">
           <a href="javascript:;" class="icon-chevron-down"></a>
           <a href="javascript:;" class="icon-remove"></a>
@@ -80,72 +80,16 @@
       <div class="widget-body">
         <form action="{:U('save')}" class="form-horizontal" method="post" validate>
           <div class="control-group">
-            <label class="control-label">用户名:</label>
+            <label class="control-label">组名称:</label>
             <div class="controls">
-              <input type="text" class="span6" name="username" data-rule-required="1" data-msg-required="请输入用户名">
+              <input type="text" class="span6" name="name" data-rule-required="1" data-msg-required="请输入组名称">
             </div>
           </div>
+
           <div class="control-group">
-            <label class="control-label">用户组:</label>
+            <label class="control-label">备注:</label>
             <div class="controls">
-              <select class="span6 chzn-select" data-placeholder="Choose a Category" tabindex="1" name="group_id">
-                <volist name="group_list" id="group_vo">
-                  <option value="{$group_vo.id}">{$group_vo.name}</option>
-                </volist>
-              </select>
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">密码:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="password" data-rule-required="1" data-msg-required="请输入密码">
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">昵称:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="nickname" data-rule-required="1" data-msg-required="请输入昵称">
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">姓名:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="name" >
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">性别:</label>
-            <div class="controls">
-              <label class="radio">
-                <input type="radio" name="sex" value="1"/>
-                男
-              </label>
-              <label class="radio">
-                <input type="radio" name="sex" value="2"/>
-                女
-              </label>
-              <label class="radio">
-                <input type="radio" name="sex" value="3" checked/>
-                保密
-              </label>
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">年龄:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="age" >
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">手机号:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="mobile" >
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">邮箱:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="email" >
+              <textarea class="span6" rows="3" name="remark"></textarea>
             </div>
           </div>
           <div class="form-actions">
