@@ -12,6 +12,14 @@ class GroupModel extends BaseModel
 {
     protected $tableName = 'group';
 
+    protected $_validate = array(
+        array('name', 'require', '请填写组名称'),
+    );
+
+    protected $_auto = array(
+        array('create_time', 'now', 1, 'function'),
+        array('modification_time', 'now', 3, 'function')
+    );
     /**
      * 根据id获取一个组的信息
      *

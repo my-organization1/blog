@@ -12,6 +12,17 @@ class NodeModel extends BaseModel
 {
     protected $tableName = 'node';
 
+    protected $_validate = array(
+        array('node', 'require', '请输入节点地址'),
+        array('name', 'require', '请输入节点名称')
+    );
+
+    protected $_auto = array(
+        array('is_show', 1, 1, 'string'),
+        array('create_time', 'now', 1, 'function'),
+        array('modification_time', 'now', 3, 'function')
+    );
+
     /**
      * 获取组拥有的权限节点
      * @method getListByGroupId
