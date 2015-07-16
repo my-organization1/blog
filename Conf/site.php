@@ -1,2 +1,4 @@
 <?php
-return array();
+return array(
+    'DEFAULT_THEME' => 'default'
+);

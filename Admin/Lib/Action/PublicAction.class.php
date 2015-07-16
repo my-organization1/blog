@@ -7,7 +7,7 @@
  * @copyright 2015 blog
  */
 
-class PublicModel extends BaseModel
+class PublicAction extends BaseAction
 {
 
 }

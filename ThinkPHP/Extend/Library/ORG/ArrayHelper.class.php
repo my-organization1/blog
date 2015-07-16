@@ -28,6 +28,7 @@ class ArrayHelper
         foreach ($data as $_k => $_v) {
             if ($_v['pid'] == $pid) {
                 $list[$_k] = $_v;
+                $list['_level'] = $level;
                 unset($data[$_k]);
                 self::tree($data, $_v['id'], $level++);
             }
