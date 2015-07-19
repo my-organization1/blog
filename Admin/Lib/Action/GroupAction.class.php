@@ -11,8 +11,32 @@ class GroupAction extends BaseAction
     /**
      * 组权限管理
      */
-    function permision()
+    public function permision()
     {
+        $id = I('get.id', '');
+
+        //获取所有节点列表
+        $model = D('Node');
+        $field = 'id,pid,node,name,is_show';
+        $list = $model->_list(array(), $field, 'id asc');
+
+        $_list = array();
+        foreach ($list as $_k => $_v) {
+            if ($_v['pid'] == 0) {
+                $_list[$_v['id']] = $_v;
+            } else {
+                $_list[$_v['pid']]['child_list'][$_v['id']] = $_v;
+            }
+        }
+        $this->assign('node_list', $_list);
+
+        //获取组权限对应数据
+        $MapModel = D('GroupNodeMap');
+        $map['group_id'] = $id;
+
+        $map_list = $MapModel->_list($map, 'node_id');
+        $map_list = array_column($map_list, 'node_id');
+        $this->assign('map_list', $map_list);
         $this->display();
     }
 
@@ -29,7 +53,7 @@ class GroupAction extends BaseAction
 
         $admin_map['group_id'] = $id;
 
-        $admin_list = $AdminModel->_list($admin_map,'username');
+        $admin_list = $AdminModel->_list($admin_map, 'username');
 
         if (!empty($admin_list)) {
             $admin_list = implode(',', $admin_list);

@@ -212,6 +212,29 @@ class BaseAction extends Action
     }
 
     /**
+     * 是否显示
+     * @method isShow
+     * @param int $id 主键id
+     * @param int $is_show 1-显示 0-隐藏
+     */
+    public function isShow()
+    {
+        $model = D(MODULE_NAME);
+
+        $pk = $model->getPk();
+        $map[$pk] = intval(I($pk));
+        $is_show = I('is_show');
+
+        $set_result = $model->where($map)->setField('is_show', $is_show);
+
+        if ($set_result) {
+            $this->success('操作成功', U(MODULE_NAME.'/index'));
+        } else {
+            $this->error('操作失败');
+        }
+    }
+
+    /**
      * 后台菜单排序
      * @method menu
      * @return array 排序后的菜单

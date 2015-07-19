@@ -12,23 +12,29 @@ class PublicAction extends BaseAction
     /**
      * 单图上传
      */
-    public function upload()
+    public function uploadImg()
     {
         $upload = new UploadFile();
 
         $upload->maxSize = 3145728;
         $upload->allowExts = array('jpg', 'gif', 'png', 'jpeg');
-        $savePath = './Uploads/'.date('Ymd');
+        $savePath = './Uploads/'.date('Ymd').'/';
         if (!file_exists($savePath)) {
-            mkdir($savePath,0777,true);
+            mkdir($savePath, 0777, true);
         }
         $upload->savePath =  $savePath;
 
         if (!$upload->upload()) {
-            $this->error($upload->getErrorMsg());
+            $info['status'] = 0;
+            $info['info'] = $upload->getErrorMsg();
+            die(json_encode($info));
         }
-        $info = $upload->getUploadFileInfo();
-        $filepath = $info[0]['savepath'].$info[0]['savename'];
-        $this->success($filepath);
+
+        $fileinfo = $upload->getUploadFileInfo();
+        $filepath = __ROOT__.ltrim($fileinfo[0]['savepath'].$fileinfo[0]['savename'], '.');
+
+        $info['status'] = 1;
+        $info['info'] = $filepath;
+        die(json_encode($info));
     }
 }

@@ -78,7 +78,7 @@
         </span>
       </div>
       <div class="widget-body">
-        <form action="{:U('save')}" class="form-horizontal" method="post" validate>
+        <form action="{:U('update')}" class="form-horizontal" method="post" validate>
           <div class="control-group">
             <label class="control-label">组名称:</label>
             <div class="controls">
@@ -93,6 +93,7 @@
             </div>
           </div>
           <div class="form-actions">
+          <input type="hidden" name="id" value="{:I('get.id')}">
             <input type="submit" value="提交" class="btn btn-success">
             <input type="reset" value="重置" class="btn">
           </div>

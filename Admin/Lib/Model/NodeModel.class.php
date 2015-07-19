@@ -32,7 +32,7 @@ class NodeModel extends BaseModel
     public function getListByGroupId($group_id)
     {
         //超级管理员组获取所有节点
-        if ($group_id == 1) {
+        if (intval($group_id) === 1) {
             $node_map = array();
         } else {
             //获取拥有的节点id
@@ -50,6 +50,16 @@ class NodeModel extends BaseModel
         $field = 'id,pid,node,name,is_show';
 
         $list = $this->_list($node_map, $field, 'id asc');
+
+        return $list;
+    }
+
+    public function lists()
+    {
+        $field = 'id,pid,node,name,is_show';
+        $list = $this->_list(array(), $filed, 'id asc');
+        $list = ArrayHelper::tree($list);
+        $list = array_column($list, null, 'id');
 
         return $list;
     }

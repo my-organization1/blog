@@ -8,6 +8,29 @@
  */
 class NodeAction extends BaseAction
 {
+    public function _before_add()
+    {
+        $model = D('Node');
+
+        $list = $model->lists();
+        $this->assign('node_list', $list);
+
+    }
+
+    public function _before_edit()
+    {
+        $this->_before_add();
+    }
+
+    public function index()
+    {
+        $model = D('Node');
+        $list = $model->lists();
+
+        $this->assign('list', $list);
+        $this->display();
+    }
+
     /**
      * 删除节点
      *
@@ -20,7 +43,9 @@ class NodeAction extends BaseAction
 
         $model = D('Node');
 
-        $child_list = $model->_list($map,'id');
+        $child_map['pid'] = $id;
+
+        $child_list = $model->_list($child_map, 'id');
 
         if (!empty($child_list)) {
             $this->error('此节点还有子节点存在,请先删除所有子节点后再删除');
@@ -28,7 +53,7 @@ class NodeAction extends BaseAction
 
         $map['id'] = $id;
 
-        $this->startTrans();
+        $model->startTrans();
 
         //删除对应的节点关系表
         $del_node_map_result = $this->delNodeMap($info['id']);
@@ -36,10 +61,10 @@ class NodeAction extends BaseAction
         $del_result = D('Node')->where($map)->delete();
 
         if ($del_result !== false && $del_node_map_result !== false) {
-            $this->commit();
-            $this->success('删除成功',U('Node/index'));
+            $model->commit();
+            $this->success('删除成功', U('Node/index'));
         } else {
-            $this->rollback();
+            $model->rollback();
             $this->error('删除失败');
         }
     }

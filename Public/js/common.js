@@ -24,6 +24,13 @@ $(function(){
     $("input[type=radio],input[type=checkbox]").uniform();
     //下拉框效果
     $(".chzn-select").chosen(); $(".chzn-select-deselect").chosen({allow_single_deselect:true});
+    //编辑器
+    if($('[editor]')){
+        $('[editor]').each(function(){
+            var id = $(this).attr('id');
+            createEditor(id);
+        })
+    }
 })
 
 //ajax提交表单
@@ -99,4 +106,48 @@ function showAlert(title,msg){
         ok: function () {}
     });
     d.showModal();
+}
+
+//编辑器
+function createEditor(id){
+    var ue = UE.getEditor(id,{
+        toolbars: [[
+        'fullscreen', 'source', '|', 'undo', 'redo', '|',
+        'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+        'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+        'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+        'directionalityltr', 'directionalityrtl', 'indent', '|',
+        'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+        'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+        'simpleupload', 'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map',  'insertframe', 'insertcode', 'pagebreak', 'template', 'background', '|',
+        'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
+        'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
+        'print', 'preview', 'searchreplace', 'drafts'
+        ]],
+        initialFrameHeight: 320,
+        autoHeightEnabled: true,
+        serverUrl:EditorUploadURl,
+    });
+}
+
+function uploadImg(dom){
+    var id = $(dom).attr('id');
+    var DataInput = $(dom).attr('data-input');
+    var preview = $('[data-preview='+DataInput+']');
+    var input = $('#'+DataInput);
+
+    $.ajaxFileUpload({
+        url:AjaxUploadURl,
+        secureuri:false,
+        fileElementId:'upfile',
+        dataType: 'json',
+        success: function (i) {
+            if (i.status == 1) {
+                preview.attr('src', i.info);
+                input.attr('value', i.info);
+            } else {
+                showAlert('发生错误了', i.info);
+            }
+        },
+    })
 }

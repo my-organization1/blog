@@ -33,10 +33,6 @@ class LoginAction extends Action
      */
     public function checkLogin()
     {
-        if (!IS_POST) {
-            exit();
-        }
-
         $username = I('post.username');
         $password = I('post.password');
         $redirect_url = I('post.redirect_url', '');

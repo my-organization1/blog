@@ -17,20 +17,16 @@ class ArrayHelper
      * @param  integer $level 层级,10层以后不执行循环
      * @return array         返回排序结果
      */
-    public static function tree($data, $pid = 0, $level = 1)
+    public static function tree($data, $pid = 0, $level = 0)
     {
         static $list = array();
 
-        if ($level >= 10) {
-            return $list;
-        }
-
         foreach ($data as $_k => $_v) {
             if ($_v['pid'] == $pid) {
+                $_v['_level'] = $level;
                 $list[$_k] = $_v;
-                $list['_level'] = $level;
                 unset($data[$_k]);
-                self::tree($data, $_v['id'], $level++);
+                self::tree($data, $_v['id'], $level+1);
             }
         }
 

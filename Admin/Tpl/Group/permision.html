@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+ <meta charset="utf-8" />
+ <title>{:C('ADMIN_TITLE')}</title>
+ <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+ <meta content="" name="description" />
+ <meta content="" name="author" />
+ <include file="Public/style" />
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="fixed-top">
+ <!-- BEGIN HEADER -->
+ <include file="Public/header" />
+ <!-- END HEADER -->
+ <!-- BEGIN CONTAINER -->
+ <div id="container" class="row-fluid">
+  <!-- BEGIN SIDEBAR -->
+  <div class="sidebar-scroll">
+    <div id="sidebar" class="nav-collapse collapse">
+
+      <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+      <div class="navbar-inverse">
+        <form class="navbar-search visible-phone">
+          <input type="text" class="search-query" placeholder="Search" />
+        </form>
+      </div>
+      <!-- END RESPONSIVE QUICK SEARCH FORM -->
+      <!-- BEGIN SIDEBAR MENU -->
+      <include file="Public/menu" />
+      <!-- END SIDEBAR MENU -->
+    </div>
+  </div>
+  <!-- END SIDEBAR -->
+  <!-- BEGIN PAGE -->
+  <div id="main-content">
+   <!-- BEGIN PAGE CONTAINER-->
+   <div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+     <div class="span12">
+      <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+      <h3 class="page-title">
+       权限设定
+     </h3>
+     <ul class="breadcrumb">
+       <li>
+         <a href="{:U('/')}">后台首页</a>
+         <span class="divider">/</span>
+       </li>
+       <li>
+         <a href="{:U('Group/index')}">管理组列表</a>
+         <span class="divider">/</span>
+       </li>
+       <li>
+         <a href="__SELF__">权限设定</a>
+       </li>
+     </ul>
+     <!-- END PAGE TITLE & BREADCRUMB-->
+   </div>
+ </div>
+ <!-- END PAGE HEADER-->
+ <!-- BEGIN PAGE CONTENT-->
+ <div class="row-fluid">
+  <div class="span12">
+    <!-- BEGIN BASIC PORTLET-->
+    <div class="widget">
+      <div class="widget-title">
+        <h4><i class="icon-reorder"></i>权限设定</h4>
+        <span class="tools">
+          <a href="javascript:;" class="icon-chevron-down"></a>
+          <a href="javascript:;" class="icon-remove"></a>
+        </span>
+      </div>
+      <div class="widget-body">
+        <form action="{:U('save')}" class="form-horizontal" method="post" validate>
+        <volist name="node_list" id="node_vo">
+            <label class="checkbox line">
+              <if condition="in_array($node_vo['id'], $map_list)">
+                <input type="checkbox" value="{$node_vo.id}" onclick="return setPermision(this, '{$node_vo.id}', '{:I('get.id')}')" checked="checked"/> {$node_vo.name}
+              <else/>
+                <input type="checkbox" value="{$node_vo.id}" onclick="return setPermision(this, '{$node_vo.id}', '{:I('get.id')}')"/> {$node_vo.name}
+              </if>
+            </label>
+            <if condition="!empty($node_vo['child_list'])">
+              <div class="navbar" style="margin-left:30px">
+              <ul class="nav">
+                <volist name="node_vo.child_list" id="node_child_vo">
+                  <li style="margin-right:10px">
+                    <label class="checkbox line">
+                      <if condition="in_array($node_child_vo['id'], $map_list)">
+                        <input type="checkbox" value=" {$node_child_vo.id}" onclick="return setPermision(this, '{$node_child_vo.id}', '{:I('get.id')}')" checked="checked"/> {$node_child_vo.name}
+                      <else/>
+                        <input type="checkbox" value=" {$node_child_vo.id}" onclick="return setPermision(this, '{$node_child_vo.id}', '{:I('get.id')}')"/> {$node_child_vo.name}
+                      </if>
+                    </label>
+                  </li>
+                </volist>
+                <div style="clear:both;"></div>
+              </ul>
+            </div>
+            <div style="clear:both;"></div>
+            </if>
+        </volist>
+          <input type="hidden" name="group_id" value="{:I('get.id')}">
+        </form>
+      </div>
+    </div>
+    <!-- END BASIC PORTLET-->
+  </div>
+</div>
+<!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+</div>
+<!-- END PAGE -->
+</div>
+<!-- END CONTAINER -->
+<script>
+  var addPermisionUrl = "{:U('Group/addPermision')}";
+  var delPermisionUrl = "{:U('Group/delPermision')}";
+</script>
+<!-- BEGIN FOOTER -->
+<include file="Public/footer" />
+<include file="Public/script" />
+<script src="__PUBLIC__/js/group/common.js"></script>
+<!-- END FOOTER -->
+</body>
+<!-- END BODY -->
+</html>

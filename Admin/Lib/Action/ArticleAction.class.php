@@ -17,6 +17,7 @@ class ArticleAction extends BaseAction
     {
         $param = I('post.');
 
+        $map = array();
         foreach ($param as $_k => $_v) {
             switch ($_k) {
                 case 'catalog_id':
@@ -37,6 +38,76 @@ class ArticleAction extends BaseAction
         return $map;
     }
 
+    public function index()
+    {
+        $page = intval(I('page', 1));
+        $page_size = intval(I('page_size'), 10);
+
+        //查询文章表
+        $model = D('Article');
+
+        $field = 'id,catalog_id,admin_id,title,writer,source,view_count,status,create_time,modification_time';
+        $map = $this->_filter();
+        $list = $model->_list($map, $field, '', $page, $page_size);
+
+        if (empty($list)) {     //没有数据则直接返回
+            $this->display();
+            exit();
+        }
+
+        $count = $model->_count($map);
+
+        $PageHelper  = new PageHelper($count, $page, $page_size);
+        $pageList = $PageHelper->show();
+
+        $param = array_merge($_GET, array('page'=>$page, 'page_size'=>$page_size));
+        unset($param['_URL_']);
+
+        //查询分类表
+        $catalog_list = array_column($list, 'catalog_id');
+
+        $CatalogModel = D('Catalog');
+        $catalog_map['id'] = array('in', $catalog_list);
+        $catalog_field = 'id,name';
+
+        $catalog_list = $model->_list($catalog_map, $catalog_field);
+        $catalog_list = array_column($catalog_list, null, 'id');
+        //查询后台管理表
+        $admin_list = array_column($list, 'admin_id');
+
+        $AdminModel = D('Admin');
+        $admin_map['id'] = array('in', $admin_list);
+        $admin_field = 'id,username';
+
+        $admin_list = $model->_list($admin_map, $admin_field);
+        $admin_list = array_column($admin_list, null, 'id');
+        //合并数据
+        foreach ($list as $_k => $_v) {
+            $_v = array_merge($_v, $catalog_list[$_v['catalog_id']]);
+            $list[$_k] = array_merge($_v, $admin_list[$_v['admin_id']]);
+        }
+        $this->assign('param', $param);
+        $this->assign('page', $page);
+        $this->assign('page_size', $page_size);
+        $this->assign('list', $list);
+        $this->assign('pageList', $pageList);
+        $this->display();
+    }
+
+    public function _before_add()
+    {
+        $model = D('Catalog');
+        $field = 'id,pid,name';
+        $list = $model->_list(array(), $field, 'id asc');
+        $list = ArrayHelper::tree($list);
+        $this->assign('catalog_list', $list);
+    }
+
+    public function _before_edit()
+    {
+        $this->_before_edit();
+    }
+
     public function save()
     {
         $model = D('Article');
@@ -45,7 +116,7 @@ class ArticleAction extends BaseAction
             $this->error($model->getError());
         }
 
-        $tag = I('tag','');
+        $tag = I('tag', '');
         if (empty($tag)) {
             $this->error('请输入文章标签');
         }
@@ -55,8 +126,11 @@ class ArticleAction extends BaseAction
         $ins = $model->add();   //写入文章表
         $tag_id = $this->saveTag($tag);     //写入Tag表
         $save_map = $this->saveTagMap($tag_id, $ins);   //写入对应关系表
-
-        if ($ins && $tag_id && $save_map) {
+        dump($ins);
+        dump($tag_id);
+        dump($save_map);
+        exit();
+        if ($ins !== false && $tag_id !==false && $save_map !== false) {
             $model->commit();
             $this->success('新增成功', U('Article/index'));
         } else {
@@ -97,7 +171,7 @@ class ArticleAction extends BaseAction
      */
     private function saveTag($tag)
     {
-        $tag = explode(',',$tag);
+        $tag = explode(',', $tag);
 
         $model = D('Tag');
         $map['name'] = array('in', $tag);
@@ -113,7 +187,6 @@ class ArticleAction extends BaseAction
 
         $data = array();
         foreach ($diff_list as $_k => $_v) {
-            $_data['id'] = null;
             $_data['name'] = $_v;
             $_data['create_time'] = now();
             $_data['modification_time'] = now();
@@ -137,14 +210,14 @@ class ArticleAction extends BaseAction
      * @param  int $article_id   文章id
      * @return bool              返回执行结果
      */
-    private function saveTagMap($tag_id,$article_id)
+    private function saveTagMap($tag_id, $article_id)
     {
         $model = D('Tag');
 
         $map['article_id'] = $article_id;
 
-        $list = $model->_list($map,'tag_id');
-        $list = array_column($list,'tag_id');
+        $list = $model->_list($map, 'tag_id');
+        $list = array_column($list, 'tag_id');
         //比较标签是否发生过更改
         $diff_list = array_diff($tag_id, $list);
 
