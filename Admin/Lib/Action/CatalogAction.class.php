@@ -40,6 +40,70 @@ class CatalogAction extends BaseAction
         $this->display();
     }
 
+    public function save()
+    {
+        $model = D('Catalog');
+
+        if (!$model->create(1)) {
+            $this->error($model->getError());
+        }
+        $name = I('post.name');
+        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name,'all');
+        $link = 'Catalog/index';
+
+        $this->startTrans();
+        $add_link = D('Link')->add($url, $link);
+
+        $model->link_id = $add_link;
+        $ins = $model->add();
+
+        if ($add_link !== false && $ins !== false) {
+            $model->commit();
+            $this->success('新增成功', U('Catalog/index'));
+        } else {
+            if ($add_link === false) {
+                $this->error('此链接已存在');
+            }
+            $model->rollback();
+            $this->error('新增失败');
+        }
+    }
+
+    public function update()
+    {
+        $model = D('Catalog');
+
+        if (!$model->create(2)) {
+            $this->error($model->getError());
+        }
+        $id = I('post.id');
+        $name = I('post.name');
+        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name,'all');
+
+        $map['id'] = $id;
+
+        $link_id = $model->where($map)->getField('link_id');
+
+        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name,'all');
+        $link = 'Catalog/index';
+
+        $model->startTrans();
+
+        $update_result = $model->where($map)->save();
+        $update_link = D('Link')->update($link_id, $url, $link);
+
+        if ($update_result !== false && $update_link) {
+            $this->commit();
+            $this->success('更新成功', U('Catalog/index'));
+        } else {
+            $this->rollback();
+            if ($update_link === false) {
+                $this->error('链接已存在');
+            }
+            $this->error('更新失败');
+        }
+    }
+
     /**
      * 获取模板列表
      * 目前只读取一层,路径为./Template/指定模板主题
