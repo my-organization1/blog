@@ -126,10 +126,7 @@ class ArticleAction extends BaseAction
         $ins = $model->add();   //写入文章表
         $tag_id = $this->saveTag($tag);     //写入Tag表
         $save_map = $this->saveTagMap($tag_id, $ins);   //写入对应关系表
-        dump($ins);
-        dump($tag_id);
-        dump($save_map);
-        exit();
+
         if ($ins !== false && $tag_id !==false && $save_map !== false) {
             $model->commit();
             $this->success('新增成功', U('Article/index'));
@@ -147,6 +144,11 @@ class ArticleAction extends BaseAction
             $this->error($model->getError());
         }
 
+        $tag = I('tag', '');
+        if (empty($tag)) {
+            $this->error('请输入文章标签');
+        }
+
         $id = intval(I('post.id'));
         $map['id'] = $id;
 
@@ -154,7 +156,7 @@ class ArticleAction extends BaseAction
         $tag_id = $this->saveTag($tag);
         $save_map = $this->saveTagMap($tag_id, $id);
 
-        if ($ins && $tag_id && $save_map) {
+        if ($ins !== false && $tag_id !== false && $save_map !== false) {
             $model->commit();
             $this->success('更新成功', U('Article/index'));
         } else {
@@ -177,12 +179,12 @@ class ArticleAction extends BaseAction
         $map['name'] = array('in', $tag);
 
         $list = $model->_list($map, 'id,name');
-        $list = array_column($list, 'id', 'name');
+        $list = array_column($list, 'name', 'id');
 
         $diff_list = array_diff($tag, $list);
 
         if (empty($diff_list)) {
-            return array_keys($diff_list);
+            return array_keys($list);
         }
 
         $data = array();
@@ -212,13 +214,16 @@ class ArticleAction extends BaseAction
      */
     private function saveTagMap($tag_id, $article_id)
     {
-        $model = D('Tag');
+        $model = D('ArticleTagMap');
 
         $map['article_id'] = $article_id;
 
         $list = $model->_list($map, 'tag_id');
         $list = array_column($list, 'tag_id');
         //比较标签是否发生过更改
+
+        var_dump($tag_id);
+        var_dump($list);
         $diff_list = array_diff($tag_id, $list);
 
         if (empty($diff_list)) {
@@ -230,7 +235,6 @@ class ArticleAction extends BaseAction
 
         $data = array();
         foreach ($tag_id as $_k => $_v) {
-            $_data['id'] = null;
             $_data['tag_id'] = $_v;
             $_data['article_id'] = $article_id;
             array_push($data, $_data);
