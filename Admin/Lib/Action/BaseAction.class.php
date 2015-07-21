@@ -45,6 +45,7 @@ class BaseAction extends Action
         $order = $this->order ? $this->order : '';
         $page = $this->is_page == true ? I('page', 1) : 0 ;
         $page_size = 10 ;
+        $field = array();
 
         $list = $model->_list($map, $field, $order, $page, $page_size);
         $count = $model->_count($map);

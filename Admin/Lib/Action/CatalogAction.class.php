@@ -30,11 +30,23 @@ class CatalogAction extends BaseAction
     {
         $model = D('Catalog');
 
-        $field = 'id,pid,name,link,is_show,list_tpl,content_tpl';
+        $field = 'id,pid,name,is_show,list_tpl,content_tpl,link_id';
         $order = 'id asc';
         $list = $model->_list(array(), $field, $order);
         $list = ArrayHelper::tree($list);
         $list = array_column($list, null, 'id');
+
+        $link_id = array_column($list, 'link_id');
+
+        //查询链接表
+        $link_map['id'] = array('in', $link_id);
+        $link_list = D('Link')->_list($link_map);
+        $link_list = array_column($link_list, null, 'id');
+
+        //拼合数据
+        foreach ($list as $_k => $_v) {
+            $list[$_k] = array_merge($_v, $link_list[$_v['link_id']]);
+        }
 
         $this->assign('list', $list);
         $this->display();
@@ -48,7 +60,7 @@ class CatalogAction extends BaseAction
             $this->error($model->getError());
         }
         $name = I('post.name');
-        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name,'all');
+        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name, 'all');
         $link = 'Catalog/index';
 
         $this->startTrans();
@@ -78,13 +90,13 @@ class CatalogAction extends BaseAction
         }
         $id = I('post.id');
         $name = I('post.name');
-        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name,'all');
+        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name, 'all');
 
         $map['id'] = $id;
 
         $link_id = $model->where($map)->getField('link_id');
 
-        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name,'all');
+        $url = !empty(I('post.link')) ? I('post.link') : PinYin::encode($name, 'all');
         $link = 'Catalog/index';
 
         $model->startTrans();

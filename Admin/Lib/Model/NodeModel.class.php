@@ -57,7 +57,7 @@ class NodeModel extends BaseModel
     public function lists()
     {
         $field = 'id,pid,node,name,is_show';
-        $list = $this->_list(array(), $filed, 'id asc');
+        $list = $this->_list(array(), $field, 'id asc');
         $list = ArrayHelper::tree($list);
         $list = array_column($list, null, 'id');
 
