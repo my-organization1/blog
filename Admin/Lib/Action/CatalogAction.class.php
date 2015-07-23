@@ -173,7 +173,7 @@ class CatalogAction extends BaseAction
 
         $model = D('Router');
         if ($type == 1) {
-            return $model->save($rouder_id, $rule, $link);
+            return $model->save($router_id, $rule, $link);
         } else if($type == 2) {
             return $model->update($router_id, $rule, $link);
         }
