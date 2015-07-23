@@ -84,15 +84,15 @@ class ArticleAction extends BaseAction
         $admin_list = array_column($admin_list, null, 'id');
 
         //查询链接表
-        $link_id = array_column($list, 'link_id');
-        $link_map['id'] = array('in', $link_id);
-        $link_field = 'url,link';
-        $link_list = D('Link')->where($link_map, $link_field);
+        $router_id = array_column($list, 'router_id');
+        $router_map['id'] = array('in', $router_id);
+        $router_field = 'rule,link,router_id';
+        $router_list = D('Router')->where($router_map, $router_field);
 
         //合并数据
         foreach ($list as $_k => $_v) {
             $_v = array_merge($_v, $catalog_list[$_v['catalog_id']]);
-            $_v = array_merge($_v, $link_id[$_v['link_id']]);
+            $_v = array_merge($_v, $link_id[$_v['router_id']]);
             $list[$_k] = array_merge($_v, $admin_list[$_v['admin_id']]);
         }
         $this->assign('param', $param);
