@@ -56,7 +56,7 @@ class ArticleAction extends BaseAction
         }
 
         $count = $model->_count($map);
-
+        //分页处理
         $PageHelper  = new PageHelper($count, $page, $page_size);
         $pageList = $PageHelper->show();
 
@@ -72,6 +72,7 @@ class ArticleAction extends BaseAction
 
         $catalog_list = $model->_list($catalog_map, $catalog_field);
         $catalog_list = array_column($catalog_list, null, 'id');
+
         //查询后台管理表
         $admin_list = array_column($list, 'admin_id');
 
@@ -125,29 +126,21 @@ class ArticleAction extends BaseAction
         }
 
         $tag = I('tag', '');
+        $link = I('post.link');
         if (empty($tag)) {
             $this->error('请输入文章标签');
         }
-        //查询分类表
-        $catalog_id = I('post.catalog_id');
-        $map['id'] = $catalog_id;
-        $link_id = D('Catalog')->where($map)->getField('link_id');
-        //获取分类的link
-        $link_map['id'] = $link_id;
-        $catalog_url = D('Link')->where($link_map)->getField('url');
-        $url = trim($catalog_url).'/';
-
+        $router_id = D('Router')->getInsId();
+        $model->admin_id = 1;
+        $model->router_id = $router_id;
         $model->startTrans();
 
         $ins = $model->add();   //写入文章表
-        //写入链接表
-        $link = 'Article/index';
-        $url .= !empty(I('post.link')) ? I('post.link') : 'article_'.$ins;
-        $add_link = D('Link')->add($url, $link);
+        $add_router = $this->saveRouter($ins, $router_id, $link, 1);    //写入路由表
         $tag_id = $this->saveTag($tag);     //写入Tag表
         $save_map = $this->saveTagMap($tag_id, $ins);   //写入对应关系表
 
-        if ($ins !== false && $tag_id !==false && $save_map !== false && $add_link !== false) {
+        if ($ins !== false && $tag_id !==false && $save_map !== false && $add_router !== false) {
             $model->commit();
             $this->success('新增成功', U('Article/index'));
         } else {
@@ -165,33 +158,22 @@ class ArticleAction extends BaseAction
         }
 
         $tag = I('tag', '');
+        $link = I('post.link');
         if (empty($tag)) {
             $this->error('请输入文章标签');
         }
 
-        //查询分类表
-        $catalog_id = I('post.catalog_id');
-        $id = intval(I('post.id'));
-
-        $map['id'] = $catalog_id;
-        $link_id = D('Catalog')->where($map)->getField('link_id');
-        //获取分类的link
-        $link_map['id'] = $link_id;
-        $catalog_url = D('Link')->where($link_map)->getField('url');
-        $url = trim($catalog_url).'/';
-
-        $link = 'Article/index';
-        $url .= !empty(I('post.link')) ? I('post.link') : 'article_'.$id;
-
         $map['id'] = $id;
+        $router_id = $model->where($map)->getField('router_id');
 
         $model->startTrans();
-        $ins = $model->where($map)->save();
-        $tag_id = $this->saveTag($tag);
-        $save_map = $this->saveTagMap($tag_id, $id);
-        $update_link = D('Link')->update($link_id, $url, $link);
 
-        if ($ins !== false && $tag_id !== false && $save_map !== false && $update_link) {
+        $ins = $model->where($map)->save();     //更新主表
+        $tag_id = $this->saveTag($tag);         //更新标签表
+        $save_map = $this->saveTagMap($tag_id, $id);    //更新文章标签对应表
+        $update_router = $this->saveRouter($id, $router_id, $link, 2);  //更新路由表
+
+        if ($ins !== false && $tag_id !== false && $save_map !== false && $update_router) {
             $model->commit();
             $this->success('更新成功', U('Article/index'));
         } else {
@@ -279,5 +261,26 @@ class ArticleAction extends BaseAction
             return true;
         }
         return false;
+    }
+
+    /**
+     * 写入路由表
+     * @param  int  $article_id 文章id
+     * @param  int  $router_id  路由表主键id
+     * @param  string  $link    指向链接
+     * @param  integer $type    类型 1-新增 2-更新
+     * @return bool             成功返回true,失败返回false
+     */
+    private function saveRouter($article_id, $router_id, $link = '', $type = 1)
+    {
+        $rule = !empty($link) ? $link : 'article/'.$article_id;
+        $link = 'Article/index?id='.$article_id;
+
+        $model = D('Router');
+        if ($type == 1) {
+            return $model->save($rouder_id, $rule, $link);
+        } else if($type == 2) {
+            return $model->update($router_id, $rule, $link);
+        }
     }
 }

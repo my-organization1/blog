@@ -15,18 +15,18 @@ class BaseAction extends Action
     {
         $uid = session('uid');
 
-        if (empty($uid)) {    //判断登陆
-            redirect(U('Login/login'));
-        }
-        //判断权限,uid == 1 || gid == 1为超级管理员
-        if (session('uid') != 1 && session('gid') != 1) {
-            $current_node = MODULE_NAME.'/'.ACTION_NAME;
-            $node_list = array_column(session('node_list'), 'node');
+        // if (empty($uid)) {    //判断登陆
+        //     redirect(U('Login/login'));
+        // }
+        // //判断权限,uid == 1 || gid == 1为超级管理员
+        // if (session('uid') != 1 && session('gid') != 1) {
+        //     $current_node = MODULE_NAME.'/'.ACTION_NAME;
+        //     $node_list = array_column(session('node_list'), 'node');
 
-            if (!in_array($current_node, $node_list)) {
-                redirect(U('Login/login'));
-            }
-        }
+        //     if (!in_array($current_node, $node_list)) {
+        //         redirect(U('Login/login'));
+        //     }
+        // }
 
         $menu_list = $this->menu();
 

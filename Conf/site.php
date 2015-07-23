@@ -6,4 +6,5 @@ return array(
     'SITE_DESCRIPTION' => '站点描述',
     'DUOSHUO_KEY' => '39f177865f0cc2982ba7c7e3d7b9f7ab',
     'SITE_URL' => 'http://127.0.0.1/blog',
+    'URL_ROUTER_ON'   => true, //开启路由
 );

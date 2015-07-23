@@ -32,7 +32,12 @@ class CheckRouteBehavior extends Behavior {
         // 是否开启路由使用
         if(!C('URL_ROUTER_ON')) return $return = false;
         // 路由定义文件优先于config中的配置定义
-        $routes = C('URL_ROUTE_RULES');
+        if (!empty(C('ROUTER_TABLE'))) {
+            $list = D(C('ROUTER_TABLE'))->select();
+            $routes = array_column($list, 'link', 'rule');
+        } else {
+            $routes = C('URL_ROUTE_RULES');
+        }
         // 路由处理
         if(!empty($routes)) {
             $depr = C('URL_PATHINFO_DEPR');
