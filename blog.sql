@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50611
 File Encoding         : 65001
 
-Date: 2015-07-21 10:19:29
+Date: 2015-07-23 14:35:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -51,7 +51,7 @@ CREATE TABLE `think_article` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `catalog_id` int(11) NOT NULL COMMENT '分类ID',
   `admin_id` int(11) NOT NULL COMMENT '后台发布人id',
-  `link_id` int(11) NOT NULL,
+  `router_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL COMMENT '文章标题',
   `writer` varchar(64) NOT NULL COMMENT '作者',
   `source` varchar(64) NOT NULL COMMENT '来源',
@@ -62,17 +62,11 @@ CREATE TABLE `think_article` (
   `create_time` datetime NOT NULL,
   `modification_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of think_article
 -- ----------------------------
-INSERT INTO `think_article` VALUES ('2', '1', '1', '0', '????', '??', '??', './111.jpg', '0', '????', '1', '2015-07-20 14:40:48', '2015-07-20 14:40:48');
-INSERT INTO `think_article` VALUES ('3', '1', '1', '0', '????', '??', '??', './111.jpg', '0', '????', '1', '2015-07-20 14:43:15', '2015-07-20 14:43:15');
-INSERT INTO `think_article` VALUES ('4', '1', '1', '0', '????', '??', '??', './111.jpg', '0', '????', '1', '2015-07-20 14:43:46', '2015-07-20 14:43:46');
-INSERT INTO `think_article` VALUES ('5', '1', '1', '0', '????', '??', '??', './111.jpg', '0', '????', '1', '2015-07-20 14:44:36', '2015-07-20 14:44:36');
-INSERT INTO `think_article` VALUES ('7', '1', '1', '0', '????', '??', '??', './111.jpg', '0', '????', '1', '2015-07-20 14:46:25', '2015-07-20 14:56:59');
-INSERT INTO `think_article` VALUES ('8', '1', '1', '0', '????', '??', '??', './111.jpg', '0', '????', '1', '2015-07-20 14:47:02', '2015-07-20 14:47:02');
 
 -- ----------------------------
 -- Table structure for think_article_tag_map
@@ -83,18 +77,11 @@ CREATE TABLE `think_article_tag_map` (
   `article_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='????????';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='????????';
 
 -- ----------------------------
 -- Records of think_article_tag_map
 -- ----------------------------
-INSERT INTO `think_article_tag_map` VALUES ('2', '8', '24');
-INSERT INTO `think_article_tag_map` VALUES ('7', '0', '27');
-INSERT INTO `think_article_tag_map` VALUES ('8', '0', '26');
-INSERT INTO `think_article_tag_map` VALUES ('9', '0', '24');
-INSERT INTO `think_article_tag_map` VALUES ('10', '7', '27');
-INSERT INTO `think_article_tag_map` VALUES ('11', '7', '26');
-INSERT INTO `think_article_tag_map` VALUES ('12', '7', '24');
 
 -- ----------------------------
 -- Table structure for think_catalog
@@ -103,9 +90,8 @@ DROP TABLE IF EXISTS `think_catalog`;
 CREATE TABLE `think_catalog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) NOT NULL DEFAULT '0' COMMENT '父级分类',
-  `link_id` int(11) NOT NULL,
+  `router_id` int(11) NOT NULL,
   `name` varchar(64) NOT NULL COMMENT '分类名称',
-  `link` varchar(255) NOT NULL COMMENT '访问链接，不加网址',
   `sort` int(11) NOT NULL DEFAULT '1' COMMENT '排序',
   `title` varchar(64) DEFAULT NULL COMMENT '分类标题',
   `keywords` varchar(400) DEFAULT NULL COMMENT '关键词,SEO使用',
@@ -116,12 +102,15 @@ CREATE TABLE `think_catalog` (
   `create_time` datetime NOT NULL,
   `modification_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='?????';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='?????';
 
 -- ----------------------------
 -- Records of think_catalog
 -- ----------------------------
-INSERT INTO `think_catalog` VALUES ('1', '0', '0', 'PHP', 'php', '1', 'PHP', 'php', null, '1', 'list', 'content', '2015-07-20 14:35:18', '2015-07-20 14:35:18');
+INSERT INTO `think_catalog` VALUES ('1', '0', '0', 'PHP', '1', 'PHP', 'php', null, '1', 'list', 'content', '2015-07-20 14:35:18', '2015-07-20 14:35:18');
+INSERT INTO `think_catalog` VALUES ('4', '0', '1', 'ThinkPHP', '1', 'thinkphp', 'thinkphp', 'thinkphpp', '1', 'list', 'content', '2015-07-22 15:50:58', '2015-07-22 15:50:58');
+INSERT INTO `think_catalog` VALUES ('5', '0', '1', 'php', '1', '????', '?????', '????', '1', 'list', 'content', '2015-07-22 16:39:11', '2015-07-22 16:39:11');
+INSERT INTO `think_catalog` VALUES ('7', '0', '9', 'javascript', '1', '????', '?????', '????', '1', 'list', 'content', '2015-07-22 16:42:41', '2015-07-22 16:42:41');
 
 -- ----------------------------
 -- Table structure for think_group
@@ -155,23 +144,6 @@ CREATE TABLE `think_group_node_map` (
 
 -- ----------------------------
 -- Records of think_group_node_map
--- ----------------------------
-
--- ----------------------------
--- Table structure for think_link
--- ----------------------------
-DROP TABLE IF EXISTS `think_link`;
-CREATE TABLE `think_link` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `url` varchar(255) NOT NULL COMMENT '访问URL',
-  `link` varchar(255) NOT NULL COMMENT '指向URL',
-  `create_time` datetime NOT NULL,
-  `modification_time` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of think_link
 -- ----------------------------
 
 -- ----------------------------
@@ -255,6 +227,27 @@ CREATE TABLE `think_review` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for think_router
+-- ----------------------------
+DROP TABLE IF EXISTS `think_router`;
+CREATE TABLE `think_router` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `rule` varchar(255) NOT NULL,
+  `link` varchar(255) NOT NULL,
+  `create_time` datetime NOT NULL,
+  `modification_time` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of think_router
+-- ----------------------------
+INSERT INTO `think_router` VALUES ('7', '/^php$/', 'Catalog/index?id=4', '2015-07-22 15:50:58', '2015-07-22 15:50:58');
+INSERT INTO `think_router` VALUES ('8', '/^phpjc$/', 'Catalog/index?id=5', '2015-07-22 16:39:11', '2015-07-22 16:39:11');
+INSERT INTO `think_router` VALUES ('9', '/^javascript$/', 'Catalog/index?id=7', '2015-07-22 16:42:41', '2015-07-22 16:42:41');
+INSERT INTO `think_router` VALUES ('11', '/^article\\/9$/', 'Article/index?id=9', '2015-07-22 17:38:12', '2015-07-22 17:38:12');
+
+-- ----------------------------
 -- Table structure for think_stats
 -- ----------------------------
 DROP TABLE IF EXISTS `think_stats`;
@@ -281,14 +274,8 @@ CREATE TABLE `think_tag` (
   `modification_time` datetime NOT NULL,
   `is_enable` int(11) NOT NULL DEFAULT '1' COMMENT '是否启用标签 1-启用 0-禁用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COMMENT='标签表,\r\n提取文章中的标签,插入标签表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='标签表,\r\n提取文章中的标签,插入标签表';
 
 -- ----------------------------
 -- Records of think_tag
 -- ----------------------------
-INSERT INTO `think_tag` VALUES ('22', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1');
-INSERT INTO `think_tag` VALUES ('23', 'php', '2015-07-20 14:46:25', '2015-07-20 14:46:25', '1');
-INSERT INTO `think_tag` VALUES ('24', 'thinkphp', '2015-07-20 14:47:02', '2015-07-20 14:47:02', '1');
-INSERT INTO `think_tag` VALUES ('25', '', '2015-07-20 14:48:13', '2015-07-20 14:48:13', '1');
-INSERT INTO `think_tag` VALUES ('26', 'thinkphp', '2015-07-20 14:49:15', '2015-07-20 14:49:15', '1');
-INSERT INTO `think_tag` VALUES ('27', 'thinkphp', '2015-07-20 14:49:50', '2015-07-20 14:49:50', '1');
