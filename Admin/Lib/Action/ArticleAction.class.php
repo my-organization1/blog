@@ -70,7 +70,7 @@ class ArticleAction extends BaseAction
         $catalog_map['id'] = array('in', $catalog_list);
         $catalog_field = 'id,name';
 
-        $catalog_list = $model->_list($catalog_map, $catalog_field);
+        $catalog_list = $CatalogModel->_list($catalog_map, $catalog_field);
         $catalog_list = array_column($catalog_list, null, 'id');
 
         //查询后台管理表
@@ -80,7 +80,7 @@ class ArticleAction extends BaseAction
         $admin_map['id'] = array('in', $admin_list);
         $admin_field = 'id,username';
 
-        $admin_list = $model->_list($admin_map, $admin_field);
+        $admin_list = $AdminModel->_list($admin_map, $admin_field);
         $admin_list = array_column($admin_list, null, 'id');
 
         //查询链接表
@@ -95,6 +95,7 @@ class ArticleAction extends BaseAction
             $_v = array_merge($_v, $link_id[$_v['router_id']]);
             $list[$_k] = array_merge($_v, $admin_list[$_v['admin_id']]);
         }
+
         $this->assign('param', $param);
         $this->assign('page', $page);
         $this->assign('page_size', $page_size);
@@ -136,6 +137,7 @@ class ArticleAction extends BaseAction
         $model->startTrans();
 
         $ins = $model->add();   //写入文章表
+
         $add_router = $this->saveRouter($ins, $router_id, $link, 1);    //写入路由表
         $tag_id = $this->saveTag($tag);     //写入Tag表
         $save_map = $this->saveTagMap($tag_id, $ins);   //写入对应关系表

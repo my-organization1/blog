@@ -46,8 +46,6 @@ class AdminAction extends BaseAction
     {
         $model = D('Admin');
 
-        $data = I('post.');
-
         if (!$model->create()) {
             $this->error($model->getError());
         }
