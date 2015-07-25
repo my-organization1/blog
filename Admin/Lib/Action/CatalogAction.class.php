@@ -33,9 +33,10 @@ class CatalogAction extends BaseAction
     {
         $model = D('Catalog');
 
-        $field = 'id,pid,name,is_show,list_tpl,content_tpl,link_id';
+        $field = 'id,pid,name,is_show,list_tpl,content_tpl,router_id';
         $order = 'id asc';
         $list = $model->_list(array(), $field, $order);
+
         $list = ArrayHelper::tree($list);
         $list = array_column($list, null, 'id');
 

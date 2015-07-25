@@ -58,7 +58,7 @@
          <span class="divider">/</span>
        </li>
        <li>
-         <a href="__SELF__">新增文章</a>
+         <a href="__SELF__">编辑文章</a>
        </li>
      </ul>
      <!-- END PAGE TITLE & BREADCRUMB-->
@@ -71,24 +71,24 @@
     <!-- BEGIN BASIC PORTLET-->
     <div class="widget">
       <div class="widget-title">
-        <h4><i class="icon-reorder"></i>新增文章</h4>
+        <h4><i class="icon-reorder"></i>编辑文章</h4>
         <span class="tools">
           <a href="javascript:;" class="icon-chevron-down"></a>
           <a href="javascript:;" class="icon-remove"></a>
         </span>
       </div>
       <div class="widget-body">
-        <form action="{:U('save')}" class="form-horizontal" method="post" validate enctype="multipart/form-data">
+        <form action="{:U('update')}" class="form-horizontal" method="post" validate enctype="multipart/form-data">
           <div class="control-group">
             <label class="control-label">文章标题:</label>
             <div class="controls">
-              <input type="text" class="span6" name="title" data-rule-required="1" data-msg-required="请输入文章标题">
+              <input type="text" class="span6" name="title" data-rule-required="1" data-msg-required="请输入文章标题" value="{$vo.title}">
             </div>
           </div>
           <div class="control-group">
             <label class="control-label">标签:</label>
             <div class="controls">
-              <input type="text" class="span6" name="tag" data-rule-required="1" data-msg-required="请输入文章标签">
+              <input type="text" class="span6" name="tag" data-rule-required="1" data-msg-required="请输入文章标签" value="{$vo.tag}">
             </div>
           </div>
           <div class="control-group">
@@ -106,7 +106,7 @@
             <div class="controls">
               <div data-provides="fileupload" class="fileupload fileupload-new">
                 <div style="width: 200px; height: 150px;" class="fileupload-new thumbnail">
-                  <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" width="200px" data-preview="thumb">
+                  <img alt="" src="{$vo.thumb}" width="200px" data-preview="thumb">
                 </div>
                 <div style="max-width: 200px; max-height: 150px; line-height: 20px;" class="fileupload-preview fileupload-exists thumbnail"></div>
                 <div>
@@ -114,29 +114,30 @@
                   <input type="file" class="default" id="upfile" data-input="thumb" name="upfile" onchange="uploadImg(this)">
                  </span>
                </div>
-               <input type="hidden" class="span6" name="thumb" id="thumb">
+               <input type="hidden" class="span6" name="thumb" id="thumb" value="{$vo.thumb}">
              </div>
            </div>
          </div>
          <div class="control-group">
           <label class="control-label">作者:</label>
           <div class="controls">
-            <input type="text" class="span6" name="writer" data-rule-required="1" data-msg-required="请输入作者">
+            <input type="text" class="span6" name="writer" data-rule-required="1" data-msg-required="请输入作者" value="{$vo.writer}">
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">来源:</label>
           <div class="controls">
-            <input type="text" class="span6" name="source" data-rule-required="1" data-msg-required="请输入文章来源">
+            <input type="text" class="span6" name="source" data-rule-required="1" data-msg-required="请输入文章来源" value="{$vo.source}">
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">文章内容:</label>
           <div class="controls">
-            <textarea name="content" class="span10" id="editor1" cols="30" rows="10" editor></textarea>
+            <textarea name="content" class="span10" id="editor1" cols="30" rows="10" editor>{$vo.content}</textarea>
           </div>
         </div>
         <div class="form-actions">
+        <input type="hidden" name="id" value="{$vo.id}">
           <input type="submit" value="提交" class="btn btn-success">
           <input type="reset" value="重置" class="btn">
         </div>

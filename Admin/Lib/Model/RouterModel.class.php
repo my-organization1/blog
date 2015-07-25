@@ -48,10 +48,9 @@ class RouterModel extends BaseModel
      */
     public function getInsId()
     {
-        $last_id = $this->order('id desc')->limit(1)->getField('id');
-
-        $last_id = empty($last_id) ? 0 : $last_id;
-        return $last_id + 1;
+        $sql = 'SHOW TABLE STATUS LIKE \''.C('DB_PREFIX').'router\'';
+        $info = $this->query($sql);
+        return $info[0]['Auto_increment'] ? $info[0]['Auto_increment'] : 1;
     }
 
     /**

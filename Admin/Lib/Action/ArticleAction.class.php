@@ -41,12 +41,12 @@ class ArticleAction extends BaseAction
     public function index()
     {
         $page = intval(I('page', 1));
-        $page_size = intval(I('page_size'), 10);
+        $page_size = intval(I('page_size', 10));
 
         //查询文章表
         $model = D('Article');
 
-        $field = 'id,catalog_id,admin_id,link_id,title,writer,source,view_count,status,create_time,modification_time';
+        $field = 'id,catalog_id,admin_id,router_id,title,writer,source,view_count,status,create_time,modification_time';
         $map = $this->_filter();
         $list = $model->_list($map, $field, '', $page, $page_size);
 
@@ -68,31 +68,33 @@ class ArticleAction extends BaseAction
 
         $CatalogModel = D('Catalog');
         $catalog_map['id'] = array('in', $catalog_list);
-        $catalog_field = 'id,name';
+        $catalog_field = 'id as catalog_id,name as catalog_name';
 
         $catalog_list = $CatalogModel->_list($catalog_map, $catalog_field);
-        $catalog_list = array_column($catalog_list, null, 'id');
+        $catalog_list = array_column($catalog_list, null, 'catalog_id');
 
         //查询后台管理表
         $admin_list = array_column($list, 'admin_id');
 
         $AdminModel = D('Admin');
         $admin_map['id'] = array('in', $admin_list);
-        $admin_field = 'id,username';
+        $admin_field = 'id as admin_id,username,nickname';
 
         $admin_list = $AdminModel->_list($admin_map, $admin_field);
-        $admin_list = array_column($admin_list, null, 'id');
+        $admin_list = array_column($admin_list, null, 'admin_id');
 
         //查询链接表
         $router_id = array_column($list, 'router_id');
         $router_map['id'] = array('in', $router_id);
-        $router_field = 'rule,link,router_id';
-        $router_list = D('Router')->where($router_map, $router_field);
+        $router_field = 'rule,link,id as router_id';
+        $router_list = D('Router')->_list($router_map, $router_field);
+
+        $router_list = array_column($router_list, null, 'router_id');
 
         //合并数据
         foreach ($list as $_k => $_v) {
             $_v = array_merge($_v, $catalog_list[$_v['catalog_id']]);
-            $_v = array_merge($_v, $link_id[$_v['router_id']]);
+            $_v = array_merge($_v, $router_list[$_v['router_id']]);
             $list[$_k] = array_merge($_v, $admin_list[$_v['admin_id']]);
         }
 
@@ -118,6 +120,11 @@ class ArticleAction extends BaseAction
         $this->_before_edit();
     }
 
+    /**
+     * 新增文章
+     * 保存到文章表,路由表,TAG表,TAG-ARTICLE对应表
+     * @method save
+     */
     public function save()
     {
         $model = D('Article');
@@ -151,6 +158,11 @@ class ArticleAction extends BaseAction
         }
     }
 
+    /**
+     * 更新文章表
+     *保存到文章表,路由表,TAG表,TAG-ARTICLE对应表
+     * @method update
+     */
     public function update()
     {
         $model = D('Article');
@@ -181,6 +193,37 @@ class ArticleAction extends BaseAction
         } else {
             $model->rollback();
             $this->error('更新失败');
+        }
+    }
+
+    /**
+     * 删除文章
+     * 同时删除路由表,删除标签文章对应表
+     * @method del
+     */
+    public function del()
+    {
+        $id = I('get.id');
+        $map['id'] = $id;
+
+        $model = D('Article');
+
+        $info = $model->_get($map);
+
+        $model->startTrans();   //开启事务
+
+        $del_article = $model->delete($id);    //删除文章表
+
+        $del_router = D('Router')->where(array('id' => $info['router_id']))->delete();  //删除路由表
+
+        $del_map = D('ArticleTagMap')->where(array('article_id' => $id))->delete();     //删除标签文章对应表
+
+        if ($del_article !== false && $del_router !== false && $del_map !== false) {
+            $model->commit();
+            $this->success('删除成功', U('Article/index'));
+        } else {
+            $model->rollback();
+            $this->error('删除失败');
         }
     }
     /**
@@ -281,7 +324,7 @@ class ArticleAction extends BaseAction
         $model = D('Router');
         if ($type == 1) {
             return $model->save($rouder_id, $rule, $link);
-        } else if($type == 2) {
+        } else if ($type == 2) {
             return $model->update($router_id, $rule, $link);
         }
     }

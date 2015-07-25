@@ -25,6 +25,7 @@ class BaseModel extends Model
      */
     public function _list($map = array(), $field = '', $order = '', $page = 0, $page_size = 10)
     {
+
         $pk = $this->pk;    //主键
         $order = empty($order)?$pk.' desc':$order;
 
