@@ -138,6 +138,9 @@ class ArticleAction extends BaseAction
         if (empty($tag)) {
             $this->error('请输入文章标签');
         }
+        if (!$model->checkLink($link)) {
+            $this->error('链接已存在');
+        }
         $router_id = D('Router')->getInsId();
         $model->admin_id = 1;
         $model->router_id = $router_id;
@@ -175,6 +178,9 @@ class ArticleAction extends BaseAction
         $link = I('post.link');
         if (empty($tag)) {
             $this->error('请输入文章标签');
+        }
+        if (!$model->checkLink($link)) {
+            $this->error('链接已存在');
         }
 
         $map['id'] = $id;
