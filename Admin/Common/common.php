@@ -10,13 +10,14 @@ function now()
  * @param  string        $rule 正则路由
  * @return  string       还原以后的链接
  */
-function RestoreRouter($rule)
+function RestoreRule($rule)
 {
     $rule = ltrim(trim($rule, '$/'), '/^');
     $rule = stripslashes($rule);
 
     return $rule;
 }
+
 //兼容低版本array_column函数
 if (!function_exists('array_column')) {
     function array_column(array $array, $columnKey, $indexKey = null)

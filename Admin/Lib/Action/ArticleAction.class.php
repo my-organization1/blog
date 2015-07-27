@@ -138,9 +138,7 @@ class ArticleAction extends BaseAction
         if (empty($tag)) {
             $this->error('请输入文章标签');
         }
-        if (!$model->checkLink($link)) {
-            $this->error('链接已存在');
-        }
+
         $router_id = D('Router')->getInsId();
         $model->admin_id = 1;
         $model->router_id = $router_id;
@@ -157,7 +155,15 @@ class ArticleAction extends BaseAction
             $this->success('新增成功', U('Article/index'));
         } else {
             $model->rollback();
-            $this->error('新增失败');
+            if ($tag_id === false) {
+                $this->error('新增Tag失败');
+            } else if ($save_map === false) {
+                $this->error('保存Tag失败');
+            } else if ($add_router) {
+                $this->error('访问链接已存在,请换一个新链接');
+            } else {
+                $this->error('新增失败');
+            }
         }
     }
 
@@ -179,9 +185,6 @@ class ArticleAction extends BaseAction
         if (empty($tag)) {
             $this->error('请输入文章标签');
         }
-        if (!$model->checkLink($link)) {
-            $this->error('链接已存在');
-        }
 
         $map['id'] = $id;
         $router_id = $model->where($map)->getField('router_id');
@@ -198,7 +201,15 @@ class ArticleAction extends BaseAction
             $this->success('更新成功', U('Article/index'));
         } else {
             $model->rollback();
-            $this->error('更新失败');
+            if ($tag_id === false) {
+                $this->error('更新Tag失败');
+            } else if ($save_map === false) {
+                $this->error('无法建立文章和Tag对应关系');
+            } else if ($update_router) {
+                $this->error('访问链接已存在,请换一个新链接');
+            } else {
+                $this->error('更新失败');
+            }
         }
     }
 

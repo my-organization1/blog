@@ -29,21 +29,4 @@ class ArticleModel extends BaseModel
     {
         return session('uid');
     }
-
-    public function checkLink($link)
-    {
-        if (empty($link)) {
-            return true;
-        }
-
-        $RootDirList = scandir('.');
-        $RootDirList = array_map(function($v){
-            return strtolower($v);
-        }, $RootDirList);       //将数组里的值全部转换为小写
-
-        if (in_array(strtolower($link), $RootDirList)) {
-            return false;
-        }
-        return true;
-    }
 }

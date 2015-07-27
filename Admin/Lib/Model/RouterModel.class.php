@@ -12,10 +12,6 @@ class RouterModel extends BaseModel
 
     public function save($id, $rule, $link)
     {
-        //检测路由格式
-        if (!$this->checkRuleFormat($rule)) {
-            return false;
-        }
         $rule = addcslashes($rule, '/');
         $rule = '/^'.$rule.'$/';
 
@@ -37,6 +33,13 @@ class RouterModel extends BaseModel
     public function update($id, $rule, $link)
     {
         $map['id'] = $id;
+
+        $rule = addcslashes($rule, '/');
+        $rule = '/^'.$rule.'$/';
+
+        if ($this->checkRule($rule, $id)) {
+            return false;
+        }
 
         $data['rule'] = $rule;
         $data['link'] = $link;
@@ -62,11 +65,24 @@ class RouterModel extends BaseModel
     /**
      * 监测路由是否已存在
      * @param  string $rule 路由
+     * @param  int    $id   查询除此id以外的数据
      * @return bool       存在返回true，不存在返回false
      */
-    private function checkRule($rule)
+    private function checkRule($rule, $id='')
     {
+        $RootDirList = scandir('.');
+        $RootDirList = array_map(function($v){
+            return strtolower($v);
+        }, $RootDirList);       //将数组里的值全部转换为小写
+
+        if (in_array(strtolower($link), $RootDirList)) {
+            return false;
+        }
+
         $map['rule'] = $rule;
+        if (!empty($id)) {
+            $map['id'] = array('neq', $id);
+        }
 
         $info = $this->where($map)->getField('id');
 
@@ -75,14 +91,5 @@ class RouterModel extends BaseModel
         } else {
             return false;
         }
-    }
-
-    private function checkRuleFormat($rule)
-    {
-        $rootDirList = scandir('.');
-        if (in_array($rule, $rootDirList)) {
-            return false;
-        }
-        return ture;
     }
 }
