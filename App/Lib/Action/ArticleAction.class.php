@@ -1,13 +1,13 @@
 <?php
 /**
- * 前台基类
+ * 文章详情Action
  * @package Action
  * @author guolei <2387813033@qq.com>
  * @copyright 2015 blog
  */
-class BaseAction extends Action
+class ArticleAction extends BaseAction
 {
-    public function _initialize()
+    public function index()
     {
 
     }

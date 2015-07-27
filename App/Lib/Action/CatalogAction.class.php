@@ -1,8 +1,14 @@
 <?php
+/**
+ * 分类Action
+ * @package Action
+ * @author guolei <2387813033@qq.com>
+ * @copyright 2015 blog
+ */
 class CatalogAction extends BaseAction
 {
-    function index()
+    public function index()
     {
-        dump($_GET);
+
     }
 }
