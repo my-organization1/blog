@@ -21,14 +21,14 @@ class View {
      * 模板输出变量
      * @var tVar
      * @access protected
-     */ 
+     */
     protected $tVar     =   array();
 
     /**
      * 模板主题
      * @var theme
      * @access protected
-     */ 
+     */
     protected $theme    =   '';
 
     /**
@@ -72,6 +72,7 @@ class View {
         G('viewStartTime');
         // 视图开始标签
         tag('view_begin',$templateFile);
+
         // 解析并获取模板内容
         $content = $this->fetch($templateFile,$content,$prefix);
         // 输出模板内容
@@ -111,7 +112,7 @@ class View {
         if(empty($content)) {
             $templateFile   =   $this->parseTemplate($templateFile);
             // 模板文件不存在直接返回
-            if(!is_file($templateFile)) 
+            if(!is_file($templateFile))
                 throw_exception(L('_TEMPLATE_NOT_EXIST_').'['.$templateFile.']');
         }
         // 页面缓存
@@ -142,6 +143,7 @@ class View {
      * @return string
      */
     public function parseTemplate($template='') {
+
         $app_name=APP_NAME==basename(dirname($_SERVER['SCRIPT_FILENAME'])) && ''==__APP__?'':APP_NAME.'/';
         if(is_file($template)) {
             $group  =   defined('GROUP_NAME')?GROUP_NAME.'/':'';
@@ -150,7 +152,7 @@ class View {
             if(1==C('APP_GROUP_MODE')){ // 独立分组模式
                 define('THEME_PATH',   dirname(BASE_LIB_PATH).'/'.$group.basename(TMPL_PATH).'/'.$theme);
                 define('APP_TMPL_PATH',__ROOT__.'/'.$app_name.C('APP_GROUP_PATH').'/'.$group.basename(TMPL_PATH).'/'.$theme);
-            }else{ 
+            }else{
                 define('THEME_PATH',   TMPL_PATH.$group.$theme);
                 define('APP_TMPL_PATH',__ROOT__.'/'.$app_name.basename(TMPL_PATH).'/'.$group.$theme);
             }
@@ -170,7 +172,7 @@ class View {
         if(1==C('APP_GROUP_MODE')){ // 独立分组模式
             define('THEME_PATH',   dirname(BASE_LIB_PATH).'/'.$group.basename(TMPL_PATH).'/'.$theme);
             define('APP_TMPL_PATH',__ROOT__.'/'.$app_name.C('APP_GROUP_PATH').'/'.$group.basename(TMPL_PATH).'/'.$theme);
-        }else{ 
+        }else{
             define('THEME_PATH',   TMPL_PATH.$group.$theme);
             define('APP_TMPL_PATH',__ROOT__.'/'.$app_name.basename(TMPL_PATH).'/'.$group.$theme);
         }

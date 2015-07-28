@@ -92,7 +92,7 @@
                                         <td>
                                           {$vo.id}
                                         </td>
-                                        <td>{:str_repeat(' data-rule-required="1" data-msg-required="请输入自定义链接" ', $vo['_level'])} {$vo.name}</td>
+                                        <td>{:str_repeat('━', $vo['_level'])} {$vo.name}</td>
                                         <td>
                                         <if condition="$vo['pid'] neq 0">
                                           【{$list[$vo['pid']]['name']}】

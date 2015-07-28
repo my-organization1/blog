@@ -10,6 +10,6 @@ class IndexAction extends BaseAction
 
     public function index()
     {
-        $this->display();
+        $this->display(C('APP_DEFAULT_THEME').'/index');
     }
 }

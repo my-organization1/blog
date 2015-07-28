@@ -24,6 +24,7 @@ class CatalogAction extends BaseAction
     public function _before_edit()
     {
         $this->_before_add();
+
     }
 
     /**
@@ -34,7 +35,7 @@ class CatalogAction extends BaseAction
         $model = D('Catalog');
 
         $field = 'id,pid,name,is_show,list_tpl,content_tpl,router_id';
-        $order = 'id asc';
+        $order = 'sort desc';
         $list = $model->_list(array(), $field, $order);
 
         //查询路由表记录
@@ -53,6 +54,31 @@ class CatalogAction extends BaseAction
         $list = array_column($list, null, 'id');
 
         $this->assign('list', $list);
+        $this->display();
+    }
+
+    /**
+     * 编辑分类
+     * @method edit
+     */
+    public function edit()
+    {
+         $id = intval(I('id'));
+        $model = D('Catalog');
+        $map['id'] = $id;
+        $field = 'id,pid,router_id,name,sort,title,keywords,description,is_show,list_tpl,content_tpl';
+        $info = $model->_get($map, $field);
+
+        //获取链接
+        $router_map['id'] = $info['router_id'];
+        $router_field = 'id as router_id,rule,link';
+
+        $router_info = D('Router')->_get($router_map, $router_field);
+        $router_info['rule'] = RestoreRule($router_info['rule']);
+
+        $info = array_merge($info, $router_info);
+
+        $this->assign('vo', $info);
         $this->display();
     }
 
@@ -115,10 +141,10 @@ class CatalogAction extends BaseAction
         $update_router = $this->saveRouter($id, $router_id, $link, 2);  //写入路由表
 
         if ($update_router !== false && $update_result !== false) {
-            $this->commit();
+            $model->commit();
             $this->success('更新成功', U('Catalog/index'));
         } else {
-            $this->rollback();
+            $model->rollback();
             if ($update_router === false) {
                 $this->error('链接格式不正确或此链接已存在');
             }
@@ -128,7 +154,7 @@ class CatalogAction extends BaseAction
 
     public function del()
     {
-        $model = D('Router');
+        $model = D('Catalog');
         $id = intval(I('get.id'));
 
         $map['id'] = $id;

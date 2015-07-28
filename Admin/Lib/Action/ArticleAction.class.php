@@ -271,9 +271,11 @@ class ArticleAction extends BaseAction
     public function Status()
     {
         $id = I('id');
-        $status = I('status');
+        $status = I('status', 0);
 
-        $result = D('Article')->where($map)->setField('status', $status);
+        $map['id'] = $id;
+        $data['status'] = $status;
+        $result = D('Article')->where($map)->save($data);
 
         if ($result) {
             $this->success('更新状态成功', U('Article/index'));
