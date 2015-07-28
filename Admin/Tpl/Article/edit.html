@@ -88,7 +88,7 @@
           <div class="control-group">
             <label class="control-label">标签:</label>
             <div class="controls">
-              <input type="text" class="span6" name="tag" data-rule-required="1" data-msg-required="请输入文章标签" value="{$vo.tag}">
+              <input type="text" class="span6" name="tag" data-rule-required="1" data-msg-required="请输入文章标签" value="{$tag}">
             </div>
           </div>
           <div class="control-group">
@@ -106,7 +106,7 @@
             <div class="controls">
               <div data-provides="fileupload" class="fileupload fileupload-new">
                 <div style="width: 200px; height: 150px;" class="fileupload-new thumbnail">
-                  <img alt="" src="{$vo.thumb}" width="200px" data-preview="thumb">
+                  <img alt="" src="{$vo.thumb|default='http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image'}" width="200px" data-preview="thumb">
                 </div>
                 <div style="max-width: 200px; max-height: 150px; line-height: 20px;" class="fileupload-preview fileupload-exists thumbnail"></div>
                 <div>

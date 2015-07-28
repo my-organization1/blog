@@ -38,6 +38,9 @@ class ArticleAction extends BaseAction
         return $map;
     }
 
+    /**
+     * 文章列表
+     */
     public function index()
     {
         $page = intval(I('page', 1));
@@ -117,7 +120,25 @@ class ArticleAction extends BaseAction
 
     public function _before_edit()
     {
-        $this->_before_edit();
+        $this->_before_add();
+
+        //查询标签TagId
+        $article_id = I('id');
+        $map['article'] = $article_id;
+
+        $tag_id_list = D('ArticleTagMap')->_list($map, 'tag_id', 'tag_id asc');
+        $tag_id_list = array_column($tag_id_list, 'tag_id');
+
+        //查询标签名称
+        $tag_map['id'] = array('in', $tag_id_list);
+        $tag_map['is_enable'] = 1;
+        $tag_field = 'id,name';
+
+        $tag_list = D('Tag')->_list($tag_map, $tag_field, 'id asc');
+        $tag_list = array_column($tag_list, 'name');
+        $tag = implode(',', $tag_list);
+
+        $this->assign('tag', $tag);
     }
 
     /**
@@ -243,6 +264,24 @@ class ArticleAction extends BaseAction
             $this->error('删除失败');
         }
     }
+
+    /**
+     * 更新文章状态
+     */
+    public function Status()
+    {
+        $id = I('id');
+        $status = I('status');
+
+        $result = D('Article')->where($map)->setField('status', $status);
+
+        if ($result) {
+            $this->success('更新状态成功', U('Article/index'));
+        } else {
+            $this->error('更新状态失败');
+        }
+    }
+
     /**
      * 保存文章标签到TAG表
      *

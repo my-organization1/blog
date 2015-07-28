@@ -18,7 +18,6 @@ class NodeModel extends BaseModel
     );
 
     protected $_auto = array(
-        array('is_show', 1, 1, 'string'),
         array('create_time', 'now', 1, 'function'),
         array('modification_time', 'now', 3, 'function')
     );

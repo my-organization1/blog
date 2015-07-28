@@ -50,6 +50,20 @@ class RouterModel extends BaseModel
         return $ins;
     }
 
+    public function lists($map, $field)
+    {
+        $router_list = $this->_list($map, $field);
+
+        if (empty($router_list)) {
+            return array();
+        }
+        foreach ($router_list as $_k => $_v) {
+            $router_list[$_k]['rule'] = RestoreRule($_v['rule']);
+        }
+
+        return $router_list;
+    }
+
 
     /**
      * 获取即将插入的主键id

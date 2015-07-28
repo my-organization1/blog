@@ -103,9 +103,15 @@
                                         <td>{$vo.view_count}</td>
                                         <td>
                                           <switch name="vo.status">
-                                            <case value="1">正常</case>
-                                            <case value="0">不显示</case>
-                                            <case value="-1">回收站</case>
+                                            <case value="1">
+                                              <a href="{:U('Status',array('id'=>$vo['id'],'status'=>0))}" class="btn btn-success" onclick="return AjaxBtn(this)"><i class="icon-ok tooltips" data-placement="top" data-original-title="点击隐藏"></i></a>
+                                            </case>
+                                            <case value="0">
+                                              <a href="{:U('Status',array('id'=>$vo['id'],'is_show'=>1))}" class="btn btn-warning" onclick="return AjaxBtn(this)"><i class="icon-remove tooltips" data-placement="top" data-original-title="点击显示"></i></a>
+                                            </case>
+                                            <case value="-1"><!--! 这里应该是垃圾桶的标志,还未改正!-->
+                                              <a href="{:U('Status',array('id'=>$vo['id'],'is_show'=>1))}" class="btn btn-warning" onclick="return AjaxBtn(this)"><i class="icon-remove tooltips" data-placement="top" data-original-title="点击显示"></i></a>
+                                            </case>
                                           </switch>
                                         </td>
                                         <td>

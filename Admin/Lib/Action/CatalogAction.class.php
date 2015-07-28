@@ -37,6 +37,18 @@ class CatalogAction extends BaseAction
         $order = 'id asc';
         $list = $model->_list(array(), $field, $order);
 
+        //查询路由表记录
+        $router_id = array_column($list, 'router_id');
+        $router_field = 'id as router_id,rule,link';
+        $router_map['id'] = array('in', $router_id);
+        $router_list = D('Router')->lists($router_map, $router_field);
+        $router_list = array_column($router_list, null, 'router_id');
+
+        //合并数据
+        foreach ($list as $_k => $_v) {
+            $list[$_k] = array_merge($_v, $router_list[$_v['router_id']]);
+        }
+
         $list = ArrayHelper::tree($list);
         $list = array_column($list, null, 'id');
 
