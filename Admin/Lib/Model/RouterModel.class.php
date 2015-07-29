@@ -46,7 +46,7 @@ class RouterModel extends BaseModel
         $data['modification_time'] = now();
 
         $save = $this->where($map)->save($data);
-
+        ## 这个$ins变量哪里来的？？这个返回值有问题。 for Mr.Cong
         return $ins;
     }
 
@@ -88,7 +88,7 @@ class RouterModel extends BaseModel
         $RootDirList = array_map(function($v){
             return strtolower($v);
         }, $RootDirList);       //将数组里的值全部转换为小写
-
+        ## $link这个变量哪里来的？？未定义 for Mr.Cong
         if (in_array(strtolower($link), $RootDirList)) {
             return false;
         }

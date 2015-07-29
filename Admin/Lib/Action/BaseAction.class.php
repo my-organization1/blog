@@ -215,6 +215,7 @@ class BaseAction extends Action
     /**
      * 是否显示
      * @method isShow
+     * ## 这个方法都没传参数，所以下面的注释多余了 for Mr.Cong
      * @param int $id 主键id
      * @param int $is_show 1-显示 0-隐藏
      */

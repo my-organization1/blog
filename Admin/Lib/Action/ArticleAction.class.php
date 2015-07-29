@@ -381,6 +381,7 @@ class ArticleAction extends BaseAction
 
         $model = D('Router');
         if ($type == 1) {
+            ## $rouder_id 这个变量你写错了吧？正确的应该是$router_id for Mr.Cong
             return $model->save($rouder_id, $rule, $link);
         } else if ($type == 2) {
             return $model->update($router_id, $rule, $link);
