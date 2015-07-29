@@ -35,15 +35,7 @@ class CatalogModel extends BaseModel
 
         $router_id = array_column($list, 'router_id');
 
-        //查询路由表
-        $router_map['id'] = array('in', $router_id);
-        $router_field = 'id as router_id,rule,link';
-
-        $router_list = D('Router')->_list($router_map, $router_field);
-        foreach ($router_list as $_k => $_v) {
-            $router_list[$_k]['url'] = RestoreRule($_v['rule']);
-        }
-        $router_list = array_column($router_list, null, 'router_id');
+        $router_list = D('Router')->lists($router_id);
         //合并数据
         foreach ($list as $_k => $_v) {
             $list[$_k] = array_merge($_v, $router_list[$_v['router_id']]);

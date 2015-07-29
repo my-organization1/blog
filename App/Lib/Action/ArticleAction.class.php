@@ -11,4 +11,9 @@ class ArticleAction extends BaseAction
     {
 
     }
+
+    public function lists()
+    {
+
+    }
 }

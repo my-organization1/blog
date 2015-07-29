@@ -9,6 +9,10 @@ class CatalogAction extends BaseAction
 {
     public function index()
     {
+        $id = I('get.id');
+        $info = D('Catalog')->info($id);
 
+        $this->assign('catalog_info', $info);
+        $this->display(C('APP_DEFAULT_THEME').'/'.$info['list_tpl']);
     }
 }

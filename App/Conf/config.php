@@ -2,6 +2,7 @@
 $common_conf = include('./Conf/include.php');
 
 $conf = array(
+    'URL_MODEL' => 2,
     'DEFAULT_FILTER' => 'htmlspecialchars,trim',
     'ROUTER_TABLE' => 'router',
     'TMPL_PATH' => TMPL_PATH.$common_conf['APP_DEFAULT_THEME'],
