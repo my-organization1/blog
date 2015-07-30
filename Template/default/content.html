@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="gb2312">
-<title>{$catalog_info.title|default=$catalog_info['name']}</title>
+<title>黑色Html5响应式个人博客模板——主题《如影随形》</title>
 <meta name="keywords" content="个人博客模板,博客模板,响应式" />
 <meta name="description" content="如影随形主题的个人博客模板，神秘、俏皮。" />
 <link href="{:C('TMPL_PATH')}/css/base.css" rel="stylesheet">
@@ -16,54 +16,37 @@
 </head>
 <body>
 <div class="ibody">
-  <include file="./Template/default/header.html" />
+<include file="./Template/default/header.html" />
   <article>
-    <h2 class="about_h">您现在的位置是：<a href="{:U('/')}">首页</a>><a href="__SELF__">{$catalog_info['name']}</a></h2>
-    <div class="bloglist">
-      <volist name="article_list" id="article_vo">
-        <div class="newblog">
-        <ul>
-          <h3><a href="{:U('/'.$article_vo['url'])}">{$article_vo.title}</a></h3>
-          <div class="autor"><span>作者：{$article_vo.writer}</span><span>浏览（<a href="{:U('/'.$article_vo['url'])}">{$article_vo.view_count}</a>）</span></div>
-          <p>十一月中旬开始，排名突然下降了，网站“个人博客”关键词排名从第一页第二名滑落到100页以后了，个人博客这个关键词百度已经搜不到了，仅有google、搜狗... <a href="{:U('/'.$article_vo['url'])}" target="_blank" class="readmore">全文</a></p>
-        </ul>
-        <figure><img src="{:C('TMPL_PATH')}/images/001.jpg" ></figure>
-        <div class="dateview">{$article_vo.create_time|strtotime|date="Y-m-d",###}</div>
+    <h2 class="about_h">您现在的位置是：<a href="/">首页</a>><a href="{:U('/'.$catalog_info['url'])}">{$catalog_info['name']}</a>><a href="__SELF__">{$article_info.title}</a></h2>
+    <div class="index_about">
+      <h2 class="c_titile">{$article_info.title}</h2>
+      <p class="box_c"><span class="d_time">发布时间：{$article_info.create_time|strtotime|date="Y-m-d",###}</span><span>编辑：{$article_info.writer}</span><span>浏览数：{$article_info.view_count}</span><span>来源：{$article_info.source}</span></p>
+      <ul class="infos">
+        {$article_info.content}
+      </ul>
+      <div class="keybq">
+        <p><span>关键字词</span>：
+        <volist name="tag_list" id="tag_vo">
+          <a href="">{$tag_vo.name}</a>,
+        </volist>
+        </p>
       </div>
-      </volist>
-    </div>
-    <div class="page">
-      <volist name="page_list" id="page_vo">
-        <switch name="page_vo.name">
-          <case value="first">
-            <neq name="page_vo.status" value="disabled">
-              <a href="{$page_vo.url}">{$page_vo.page}</a>
-            </neq>
-          </case>
-          <case value="prev">
-            <neq name="page_vo.status" value="disabled">
-              <a href="{$page_vo.url}">{$page_vo.page}</a>
-            </neq>
-          </case>
-          <case value="list">
-            <eq name="page_vo.status" value="now">
-              <b>{$page_vo.page}</b>
-            <else />
-              <a href="{$page_vo.url}">{$page_vo.page}</a>
-            </eq>
-          </case>
-          <case value="next">
-            <neq name="page_vo.status" value="disabled">
-              <a href="{$page_vo.url}">{$page_vo.page}</a>
-            </neq>
-          </case>
-          <case value="last">
-            <neq name="page_vo.status" value="disabled">
-              <a href="{$page_vo.url}">{$page_vo.page}</a>
-            </neq>
-          </case>
-        </switch>
-      </volist>
+      <div class="nextinfo">
+        <p>上一篇：<a href="/news/s/2013-09-04/606.html">程序员应该如何高效的工作学习</a></p>
+        <p>下一篇：<a href="/news/s/2013-10-21/616.html">柴米油盐的生活才是真实</a></p>
+      </div>
+      <div class="otherlink">
+        <h2>相关文章</h2>
+        <ul>
+          <li><a href="/news/s/2013-07-25/524.html" title="现在，我相信爱情！">现在，我相信爱情！</a></li>
+          <li><a href="/newstalk/mood/2013-07-24/518.html" title="我希望我的爱情是这样的">我希望我的爱情是这样的</a></li>
+          <li><a href="/newstalk/mood/2013-07-02/335.html" title="有种情谊，不是爱情，也算不得友情">有种情谊，不是爱情，也算不得友情</a></li>
+          <li><a href="/newstalk/mood/2013-07-01/329.html" title="世上最美好的爱情">世上最美好的爱情</a></li>
+          <li><a href="/news/read/2013-06-11/213.html" title="爱情没有永远，地老天荒也走不完">爱情没有永远，地老天荒也走不完</a></li>
+          <li><a href="/news/s/2013-06-06/24.html" title="爱情的背叛者">爱情的背叛者</a></li>
+        </ul>
+      </div>
     </div>
   </article>
   <aside>

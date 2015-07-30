@@ -62,7 +62,7 @@ class PageHelper
         array_push($page_list, $page_next);
 
         //将最后一页写入数组
-        $page_last['name'] = 'total';
+        $page_last['name'] = 'last';
         $page_last['page'] = $page_total;
         if ($this->page > $page_total - $this->page_roll) {
             $page_last['status'] = 'disabled';
