@@ -16,7 +16,7 @@ class CatalogAction extends BaseAction
         //获取栏目信息
         $info = D('Catalog')->info($id);
         //获取文章信息
-        $article_list = D('Article')->getListByCatalogId($id, $page, $page_size);
+        $article_list = D('Article')->lists($id, '', $page, $page_size);
 
         $count = $article_list['count'];
         unset($article_list['count']);
@@ -29,7 +29,7 @@ class CatalogAction extends BaseAction
         unset($get_params['id']);
 
         foreach ($page_list as $_k => $_v) {
-            $page_list[$_k]['url'] = U($_SERVER['PATH_INFO'], '', false).'?'.http_build_query($get_params).'.'.C('URL_HTML_SUFFIX');
+            $page_list[$_k]['url'] = U($_SERVER['PATH_INFO'], '', false) . '?' . http_build_query($get_params) . '.' . C('URL_HTML_SUFFIX');
         }
         //赋值
         $this->assign('catalog_info', $info);
@@ -37,6 +37,6 @@ class CatalogAction extends BaseAction
         $this->assign('count', $count);
         $this->assign('page_list', $page_list);
 
-        $this->display(C('APP_DEFAULT_THEME').'/'.$info['list_tpl']);
+        $this->display(C('APP_DEFAULT_THEME') . '/' . $info['list_tpl']);
     }
 }

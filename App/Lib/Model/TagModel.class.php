@@ -24,4 +24,30 @@ class TagModel extends BaseModel
 
         return $tag_list;
     }
+
+    /**
+     * 根据标签名称获取文章id
+     * @param  string  $tag_name  标签名称
+     * @param  integer $page      页数
+     * @param  integer $page_size 分页条数
+     * @return array              查询出的数据
+     */
+    public function getArticleListByTagName($tag_name, $page = 1, $page_size = 10)
+    {
+        $map['name'] = $tag_name;
+
+        $tag_id = $this->where($map)->getField('id');
+
+        if (empty($tag_id)) {
+            return array();
+        }
+
+        $where['tag_id'] = $tag_id;
+
+        $field = 'article_id';
+
+        $list = D('ArticleTagMap')->_list($where, $field, '', $page, $page_size);
+        $list = array_column($list, 'article_id');
+        return $list;
+    }
 }
