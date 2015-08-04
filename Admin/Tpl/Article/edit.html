@@ -86,6 +86,12 @@
             </div>
           </div>
           <div class="control-group">
+            <label class="control-label">访问链接:</label>
+            <div class="controls">
+              <input type="text" class="span6" name="link" data-rule-required="1" value="{$vo.rule}">
+            </div>
+          </div>
+          <div class="control-group">
             <label class="control-label">标签:</label>
             <div class="controls">
               <input type="text" class="span6" name="tag" data-rule-required="1" data-msg-required="请输入文章标签" value="{$tag}">
@@ -96,7 +102,7 @@
             <div class="controls">
               <select class="span6 chzn-select" data-placeholder="选择分类" tabindex="1" name="catalog_id">
                 <volist name="catalog_list" id="catalog_vo">
-                  <option value="{$catalog_vo.id}">{:str_repeat('━', $catalog_vo['_level'])}{$catalog_vo.name}</option>
+                  <option value="{$catalog_vo.id}" <eq name="vo.catalog_id" value="$catalog_vo['id']">selected="selected"</eq>>{:str_repeat('━', $catalog_vo['_level'])}{$catalog_vo.name}</option>
                 </volist>
               </select>
             </div>

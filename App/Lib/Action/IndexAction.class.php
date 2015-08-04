@@ -10,6 +10,8 @@ class IndexAction extends BaseAction
 
     public function index()
     {
+        //推荐文章列表
+        $article_list = D('Article')->lists();
         $this->display(C('APP_DEFAULT_THEME').'/index');
     }
 }

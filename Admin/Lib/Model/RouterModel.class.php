@@ -10,7 +10,7 @@ class RouterModel extends BaseModel
 {
     protected $tableName = 'router';
 
-    public function save($id, $rule, $link)
+    public function add($id, $rule, $link)
     {
         $rule = addcslashes($rule, '/');
         $rule = '/^'.$rule.'$/';
@@ -45,12 +45,11 @@ class RouterModel extends BaseModel
         $data['link'] = $link;
         $data['modification_time'] = now();
 
-        $save = $this->where($map)->save($data);
-
-        return $ins;
+        $save_result = $this->where($map)->save($data);
+        return $save_result;
     }
 
-    public function lists($map, $field)
+    public function lists($map, $field = array())
     {
         $router_list = $this->_list($map, $field);
 

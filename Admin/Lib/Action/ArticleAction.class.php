@@ -141,6 +141,27 @@ class ArticleAction extends BaseAction
         $this->assign('tag', $tag);
     }
 
+    public function edit()
+    {
+        $id = I('get.id');
+
+        $model = D('Article');
+        $map['id'] = $id;
+
+        $info = $model->_get($map);
+
+        //查询链接
+        $router_map['id'] = $info['router_id'];
+        $router_field = 'id as router_id,rule,link';
+        $router_list = D('Router')->lists($router_map, $router_field);
+        $router_list = array_column($router_list, null, 'router_id');
+        //拼合数据
+        $info = array_merge($info, $router_list[$info['router_id']]);
+
+        $this->assign('vo', $info);
+        $this->display();
+    }
+
     /**
      * 新增文章
      * 保存到文章表,路由表,TAG表,TAG-ARTICLE对应表
@@ -200,7 +221,7 @@ class ArticleAction extends BaseAction
         if (!$model->create()) {
             $this->error($model->getError());
         }
-
+        $id = I('post.id');
         $tag = I('tag', '');
         $link = I('post.link');
         if (empty($tag)) {
@@ -213,11 +234,12 @@ class ArticleAction extends BaseAction
         $model->startTrans();
 
         $ins = $model->where($map)->save();     //更新主表
+
         $tag_id = $this->saveTag($tag);         //更新标签表
         $save_map = $this->saveTagMap($tag_id, $id);    //更新文章标签对应表
         $update_router = $this->saveRouter($id, $router_id, $link, 2);  //更新路由表
 
-        if ($ins !== false && $tag_id !== false && $save_map !== false && $update_router) {
+        if ($ins !== false && $tag_id !== false && $save_map !== false && $update_router !== false) {
             $model->commit();
             $this->success('更新成功', U('Article/index'));
         } else {
@@ -381,7 +403,7 @@ class ArticleAction extends BaseAction
 
         $model = D('Router');
         if ($type == 1) {
-            return $model->save($router_id, $rule, $link);
+            return $model->add($router_id, $rule, $link);
         } else if ($type == 2) {
             return $model->update($router_id, $rule, $link);
         }
