@@ -1,9 +1,9 @@
 <?php
 /**
- * Controller基类
+ * Action基类
  *
  * @copyright 2015 blog
- * @package Controller
+ * @package Action
  * @author guolei <2387813033@qq.com>
  */
 

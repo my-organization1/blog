@@ -2,7 +2,7 @@
 /**
  * 后台登录类 不继承Base基类,单独存在
  *
- * @package Controller
+ * @package Action
  * @author guolei <238713033@qq.com>
  * @copyright 2015 blog
  */
@@ -19,7 +19,7 @@ class LoginAction extends Action
         if (!empty($uid)) {
             //登录状态跳转到指定地址
             $redirect_url = I('redirect_url', '');
-            $redirect_url = empty($redirect_url)?U('Index/index'):urldecode($redirect_url);
+            $redirect_url = empty($redirect_url) ? U('Index/index') : urldecode($redirect_url);
             redirect($redirect_url);
             exit();
         }
@@ -49,7 +49,8 @@ class LoginAction extends Action
 
         $admin_info = $model->login($username, $password);
 
-        if ($admin_info === false) {      //登陆失败
+        if ($admin_info === false) {
+            //登陆失败
             $error = $model->getError();
             switch ($error) {
                 case 9001:
@@ -78,7 +79,7 @@ class LoginAction extends Action
         //写入log表
         D('LoginLog')->writeLog($username);
 
-        $redirect_url = empty($redirect_url)?U('Index/index'):urldecode($redirect_url);
+        $redirect_url = empty($redirect_url) ? U('Index/index') : urldecode($redirect_url);
 
         $this->success('登录成功', $redirect_url);
     }
