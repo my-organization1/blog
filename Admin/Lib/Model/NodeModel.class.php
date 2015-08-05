@@ -14,13 +14,15 @@ class NodeModel extends BaseModel
 
     protected $_validate = array(
         array('node', 'require', '请输入节点地址'),
-        array('name', 'require', '请输入节点名称')
+        array('name', 'require', '请输入节点名称'),
     );
 
     protected $_auto = array(
         array('create_time', 'now', 1, 'function'),
-        array('modification_time', 'now', 3, 'function')
+        array('modification_time', 'now', 3, 'function'),
     );
+
+    protected $_select_field = 'id,pid,node,name,is_show';
 
     /**
      * 获取组拥有的权限节点
@@ -46,17 +48,18 @@ class NodeModel extends BaseModel
             $node_map['id'] = array_column($node_id_list, 'node_id');
         }
 
-        $field = 'id,pid,node,name,is_show';
-
-        $list = $this->_list($node_map, $field, 'id asc');
+        $list = $this->_list($node_map, $this->_select_field, 'id asc');
 
         return $list;
     }
 
+    /**
+     * 查询节点记录并且格式化为树形接口
+     * @return array 查询出的数据
+     */
     public function lists()
     {
-        $field = 'id,pid,node,name,is_show';
-        $list = $this->_list(array(), $field, 'id asc');
+        $list = $this->_list(array(), $this->_select_field, 'id asc');
         $list = ArrayHelper::tree($list);
         $list = array_column($list, null, 'id');
 

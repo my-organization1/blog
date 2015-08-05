@@ -9,17 +9,27 @@
  */
 class AdminAction extends BaseAction
 {
+    /**
+     * 新增管理员获取所有组列表供选择
+     */
     public function _before_add()
     {
+        $field = 'id,name';
         $group_list = D('Group')->_list();
         $this->assign('group_list', $group_list);
     }
 
+    /**
+     * 编辑管理员获取组列表
+     */
     public function _before_edit()
     {
         $this->_before_add();
     }
 
+    /**
+     * 不能禁用超级管理员
+     */
     public function _before_isEnable()
     {
         $id = intval(I('get.id'));
@@ -29,6 +39,9 @@ class AdminAction extends BaseAction
         }
     }
 
+    /**
+     * 防止删除超级管理员
+     */
     public function _before_del()
     {
         $id = intval(I('get.id'));
@@ -46,7 +59,7 @@ class AdminAction extends BaseAction
     {
         $model = D('Admin');
 
-        if (!$model->create()) {
+        if (!$model->create(I('post.'), 1)) {
             $this->error($model->getError());
         }
 
@@ -54,7 +67,7 @@ class AdminAction extends BaseAction
         $password = I('post.password');
 
         $model->salt = $salt;
-        $model->password = md5(md5($password).$salt);
+        $model->password = md5(md5($password) . $salt);
 
         $ins = $model->add();
 
@@ -72,17 +85,18 @@ class AdminAction extends BaseAction
             $this->error($model->getError());
         }
         $password = I('post.password');
+        $id = I('post.id');
 
-        if (empty($password)) {     //密码为空则不修改密码
+        if (empty($password)) {
+            //密码为空则不修改密码
             unset($model->password);
         } else {
             $salt = uniqid();
             $model->salt = $salt;
-            $model->password = md5(md5($password).$salt);
+            $model->password = md5(md5($password) . $salt);
         }
 
-        $pk = $model->getPk();
-        $map[$pk] = I('post.'.$pk);
+        $map['id'] = $id;
 
         $update_result = $model->where($map)->save();
 

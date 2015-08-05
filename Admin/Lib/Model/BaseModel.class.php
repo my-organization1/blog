@@ -25,18 +25,18 @@ class BaseModel extends Model
      */
     public function _list($map = array(), $field = '', $order = '', $page = 0, $page_size = 10)
     {
+        $pk = $this->pk; //主键
 
-        $pk = $this->pk;    //主键
-        $order = empty($order)?$pk.' desc':$order;
+        $order = empty($order) ? $pk . ' desc' : $order;
 
         if ($page === 0) {
             $list = $this->where($map)->field($field)->order($order)->select();
         } else {
             $page_index = ($page - 1) * $page_size;
-            $list = $this->where($map)->field($field)->order($order)->limit($page_index.','.$page_size)->select();
+            $list = $this->where($map)->field($field)->order($order)->limit($page_index . ',' . $page_size)->select();
         }
 
-        $list = empty($list)?array():$list;
+        $list = empty($list) ? array() : $list;
 
         return $list;
     }
@@ -51,11 +51,11 @@ class BaseModel extends Model
      */
     public function _get($map = array(), $field = '', $order = '')
     {
-        $pk = $this->pk;    //主键
-        $order = empty($order)?$pk.' desc':$order;
+        $pk = $this->pk; //主键
+        $order = empty($order) ? $pk . ' desc' : $order;
 
         $find = $this->where($map)->field($field)->order($order)->find();
-        $find = empty($find)?array():$find;
+        $find = empty($find) ? array() : $find;
 
         return $find;
     }

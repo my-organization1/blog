@@ -24,7 +24,6 @@ class CatalogAction extends BaseAction
     public function _before_edit()
     {
         $this->_before_add();
-
     }
 
     /**
@@ -34,24 +33,15 @@ class CatalogAction extends BaseAction
     {
         $model = D('Catalog');
 
-        $field = 'id,pid,name,is_show,list_tpl,content_tpl,router_id';
+        $field = '';
         $order = 'sort desc';
-        $list = $model->_list(array(), $field, $order);
 
-        //查询路由表记录
-        $router_id = array_column($list, 'router_id');
-        $router_field = 'id as router_id,rule,link';
-        $router_map['id'] = array('in', $router_id);
-        $router_list = D('Router')->lists($router_map, $router_field);
-        $router_list = array_column($router_list, null, 'router_id');
+        $list = $model->lists(array(), $order, 0);
 
-        //合并数据
-        foreach ($list as $_k => $_v) {
-            $list[$_k] = array_merge($_v, $router_list[$_v['router_id']]);
+        if (!empty($list)) {
+            $list = ArrayHelper::tree($list);
+            $list = array_column($list, null, 'id');
         }
-
-        $list = ArrayHelper::tree($list);
-        $list = array_column($list, null, 'id');
 
         $this->assign('list', $list);
         $this->display();
@@ -63,20 +53,10 @@ class CatalogAction extends BaseAction
      */
     public function edit()
     {
-         $id = intval(I('id'));
+        $id = intval(I('id'));
         $model = D('Catalog');
-        $map['id'] = $id;
-        $field = 'id,pid,router_id,name,sort,title,keywords,description,is_show,list_tpl,content_tpl';
-        $info = $model->_get($map, $field);
 
-        //获取链接
-        $router_map['id'] = $info['router_id'];
-        $router_field = 'id as router_id,rule,link';
-
-        $router_info = D('Router')->_get($router_map, $router_field);
-        $router_info['rule'] = RestoreRule($router_info['rule']);
-
-        $info = array_merge($info, $router_info);
+        $info = $model->get($id);
 
         $this->assign('vo', $info);
         $this->display();
@@ -102,9 +82,9 @@ class CatalogAction extends BaseAction
         $model->router_id = $router_id;
         $model->startTrans();
 
-        $ins = $model->add();   //写入主表
+        $ins = $model->add(); //写入主表
 
-        $inster_router = $this->saveRouter($ins, $router_id, $link, 1);     //写入路由表
+        $inster_router = $this->saveRouter($ins, $router_id, $link, 1); //写入路由表
 
         if ($inster_router !== false && $ins !== false) {
             $model->commit();
@@ -133,12 +113,12 @@ class CatalogAction extends BaseAction
         $link = I('post.link');
         $map['id'] = $id;
 
-        $router_id = $model->where($map)->getField('router_id');    //获取路由表id
+        $router_id = $model->where($map)->getField('router_id'); //获取路由表id
 
         $model->startTrans();
 
-        $update_result = $model->where($map)->save();       //写入主表
-        $update_router = $this->saveRouter($id, $router_id, $link, 2);  //写入路由表
+        $update_result = $model->where($map)->save(); //写入主表
+        $update_router = $this->saveRouter($id, $router_id, $link, 2); //写入路由表
 
         if ($update_router !== false && $update_result !== false) {
             $model->commit();
@@ -152,6 +132,9 @@ class CatalogAction extends BaseAction
         }
     }
 
+    /**
+     * 删除分类 ， 同时删除路由表信息
+     */
     public function del()
     {
         $model = D('Catalog');
@@ -181,9 +164,9 @@ class CatalogAction extends BaseAction
      */
     private function getTplList()
     {
-        $tpl_path = './Template/'.C('APP_DEFAULT_THEME').'/';
+        $tpl_path = './Template/' . C('APP_DEFAULT_THEME') . '/';
         $file_list = scandir($tpl_path);
-        unset($file_list[0],$file_list[1]);
+        unset($file_list[0], $file_list[1]);
 
         foreach ($file_list as $_k => $_v) {
             $pathinfo = pathinfo($_v);
@@ -207,13 +190,13 @@ class CatalogAction extends BaseAction
      */
     private function saveRouter($catalog_id, $router_id, $link = '', $type = 1)
     {
-        $rule = !empty($link) ? $link : 'catalog/'.$catalog_id;
-        $link = 'Catalog/index?id='.$catalog_id;
+        $rule = !empty($link) ? $link : 'catalog/' . $catalog_id;
+        $link = 'Catalog/index?id=' . $catalog_id;
 
         $model = D('Router');
         if ($type == 1) {
             return $model->add($router_id, $rule, $link);
-        } else if($type == 2) {
+        } else if ($type == 2) {
             return $model->update($router_id, $rule, $link);
         }
     }

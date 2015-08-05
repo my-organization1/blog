@@ -15,12 +15,13 @@ class BaseAction extends Action
     {
         $uid = session('uid');
 
-        if (empty($uid)) {    //判断登陆
+        if (empty($uid)) {
+            //判断登陆
             redirect(U('Login/login'));
         }
         //判断权限,uid == 1 || gid == 1为超级管理员
         if (session('uid') != 1 && session('gid') != 1) {
-            $current_node = MODULE_NAME.'/'.ACTION_NAME;
+            $current_node = MODULE_NAME . '/' . ACTION_NAME;
             $node_list = array_column(session('node_list'), 'node');
 
             if (!in_array($current_node, $node_list)) {
@@ -43,18 +44,19 @@ class BaseAction extends Action
 
         $map = method_exists($this, '_filter') ? $this->_filter() : array();
         $order = $this->order ? $this->order : '';
-        $page = $this->is_page == true ? I('page', 1) : 0 ;
-        $page_size = 10 ;
+        $page = $this->is_page == true ? I('page', 1) : 0;
+        $page_size = 10;
         $field = array();
 
         $list = $model->_list($map, $field, $order, $page, $page_size);
         $count = $model->_count($map);
 
-        $PageHelper  = new PageHelper($count, $page, $page_size);
+        $PageHelper = new PageHelper($count, $page, $page_size);
         $pageList = $PageHelper->show();
 
-        $param = array_merge($_GET, array('page'=>$page, 'page_size'=>$page_size));
+        $param = array_merge($_GET, array('page' => $page, 'page_size' => $page_size));
         unset($param['_URL_']);
+
         $this->assign('param', $param);
         $this->assign('page', $page);
         $this->assign('page_size', $page_size);
@@ -93,12 +95,15 @@ class BaseAction extends Action
     protected function _after_save($ins)
     {
         if ($ins) {
-            $this->success('新增成功', U(MODULE_NAME.'/index'));
+            $this->success('新增成功', U(MODULE_NAME . '/index'));
         } else {
             $this->error('新增失败,请稍后再试');
         }
     }
 
+    /**
+     * 默认编辑操作
+     */
     public function edit()
     {
         $model = D(MODULE_NAME);
@@ -126,13 +131,12 @@ class BaseAction extends Action
 
         $pk = $model->getPk();
 
-        $map[$pk] = intval(I('post.'.$pk));
+        $map[$pk] = intval(I('post.' . $pk));
 
         $update_result = $model->where($map)->save();
 
         $this->_after_update($update_result);
     }
-
 
     /**
      * 更新数据后续操作,可以覆盖此方法
@@ -142,7 +146,7 @@ class BaseAction extends Action
     protected function _after_update($update_result)
     {
         if ($update_result) {
-            $this->success('更新成功', U(MODULE_NAME.'/index'));
+            $this->success('更新成功', U(MODULE_NAME . '/index'));
         } else {
             $this->error('更新失败,请稍后再试');
         }
@@ -173,7 +177,7 @@ class BaseAction extends Action
     protected function _after_del($del_result)
     {
         if ($del_result) {
-            $this->success('删除成功', U(MODULE_NAME.'/index'));
+            $this->success('删除成功', U(MODULE_NAME . '/index'));
         } else {
             $this->error('删除失败,请稍后再试');
         }
@@ -206,7 +210,7 @@ class BaseAction extends Action
     protected function _after_isEnable($set_result)
     {
         if ($set_result) {
-            $this->success('设置成功', U(MODULE_NAME.'/index'));
+            $this->success('设置成功', U(MODULE_NAME . '/index'));
         } else {
             $this->error('设置失败,请稍后再试');
         }
@@ -229,7 +233,7 @@ class BaseAction extends Action
         $set_result = $model->where($map)->setField('is_show', $is_show);
 
         if ($set_result) {
-            $this->success('操作成功', U(MODULE_NAME.'/index'));
+            $this->success('操作成功', U(MODULE_NAME . '/index'));
         } else {
             $this->error('操作失败');
         }
@@ -246,7 +250,8 @@ class BaseAction extends Action
 
         $_list = array();
         foreach ($node_list as $_k => $_v) {
-            if ($_v['is_show'] == 0) {  //去掉不显示的项
+            if ($_v['is_show'] == 0) {
+                //去掉不显示的项
                 break;
             }
             if ($_v['pid'] == 0) {

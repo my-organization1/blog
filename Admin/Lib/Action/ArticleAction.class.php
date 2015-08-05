@@ -18,6 +18,7 @@ class ArticleAction extends BaseAction
         $param = I('post.');
 
         $map = array();
+
         foreach ($param as $_k => $_v) {
             switch ($_k) {
                 case 'catalog_id':
@@ -25,16 +26,18 @@ class ArticleAction extends BaseAction
                     $map[$_k] = intval($_v);
                     break;
                 case 'title':
-                    $map[$_k] = array('like', '%'.$_v.'%');
+                    $map[$_k] = array('like', '%' . $_v . '%');
                     break;
-                case 'start_time':
-                    $map['create_time'] = array('lt', $_v);
-                    break;
-                case 'end_time':
-                    $map['create_time'] = array('gt', $_v);
             }
         }
-
+        //开始时间和结束时间的判断
+        if (isset($param['start_time']) && isset($param['end_time'])) {
+            $map['create_time'] = array('between', array($param['start_time'], $param['end_time']));
+        } else if (isset($param['start_time'])) {
+            $map['create_time'] = array('gt', $param['start_time']);
+        } else if (isset($param['end_time'])) {
+            $map['create_time'] = array('lt', $param['end_time']);
+        }
         return $map;
     }
 
@@ -49,57 +52,23 @@ class ArticleAction extends BaseAction
         //查询文章表
         $model = D('Article');
 
-        $field = 'id,catalog_id,admin_id,router_id,title,writer,source,view_count,status,create_time,modification_time';
         $map = $this->_filter();
-        $list = $model->_list($map, $field, '', $page, $page_size);
 
-        if (empty($list)) {     //没有数据则直接返回
+        $list = $model->lists($map, '', $page, $page_size);
+
+        if (empty($list)) {
+            //没有数据则直接返回
             $this->display();
             exit();
         }
 
         $count = $model->_count($map);
         //分页处理
-        $PageHelper  = new PageHelper($count, $page, $page_size);
+        $PageHelper = new PageHelper($count, $page, $page_size);
         $pageList = $PageHelper->show();
 
-        $param = array_merge($_GET, array('page'=>$page, 'page_size'=>$page_size));
+        $param = array_merge($_GET, array('page' => $page, 'page_size' => $page_size));
         unset($param['_URL_']);
-
-        //查询分类表
-        $catalog_list = array_column($list, 'catalog_id');
-
-        $CatalogModel = D('Catalog');
-        $catalog_map['id'] = array('in', $catalog_list);
-        $catalog_field = 'id as catalog_id,name as catalog_name';
-
-        $catalog_list = $CatalogModel->_list($catalog_map, $catalog_field);
-        $catalog_list = array_column($catalog_list, null, 'catalog_id');
-
-        //查询后台管理表
-        $admin_list = array_column($list, 'admin_id');
-
-        $AdminModel = D('Admin');
-        $admin_map['id'] = array('in', $admin_list);
-        $admin_field = 'id as admin_id,username,nickname';
-
-        $admin_list = $AdminModel->_list($admin_map, $admin_field);
-        $admin_list = array_column($admin_list, null, 'admin_id');
-
-        //查询链接表
-        $router_id = array_column($list, 'router_id');
-        $router_map['id'] = array('in', $router_id);
-        $router_field = 'rule,link,id as router_id';
-        $router_list = D('Router')->_list($router_map, $router_field);
-
-        $router_list = array_column($router_list, null, 'router_id');
-
-        //合并数据
-        foreach ($list as $_k => $_v) {
-            $_v = array_merge($_v, $catalog_list[$_v['catalog_id']]);
-            $_v = array_merge($_v, $router_list[$_v['router_id']]);
-            $list[$_k] = array_merge($_v, $admin_list[$_v['admin_id']]);
-        }
 
         $this->assign('param', $param);
         $this->assign('page', $page);
@@ -121,42 +90,18 @@ class ArticleAction extends BaseAction
     public function _before_edit()
     {
         $this->_before_add();
-
-        //查询标签TagId
-        $article_id = I('id');
-        $map['article'] = $article_id;
-
-        $tag_id_list = D('ArticleTagMap')->_list($map, 'tag_id', 'tag_id asc');
-        $tag_id_list = array_column($tag_id_list, 'tag_id');
-
-        //查询标签名称
-        $tag_map['id'] = array('in', $tag_id_list);
-        $tag_map['is_enable'] = 1;
-        $tag_field = 'id,name';
-
-        $tag_list = D('Tag')->_list($tag_map, $tag_field, 'id asc');
-        $tag_list = array_column($tag_list, 'name');
-        $tag = implode(',', $tag_list);
-
-        $this->assign('tag', $tag);
     }
 
+    /**
+     * 编辑文章
+     */
     public function edit()
     {
         $id = I('get.id');
 
         $model = D('Article');
-        $map['id'] = $id;
 
-        $info = $model->_get($map);
-
-        //查询链接
-        $router_map['id'] = $info['router_id'];
-        $router_field = 'id as router_id,rule,link';
-        $router_list = D('Router')->lists($router_map, $router_field);
-        $router_list = array_column($router_list, null, 'router_id');
-        //拼合数据
-        $info = array_merge($info, $router_list[$info['router_id']]);
+        $info = $model->get($id);
 
         $this->assign('vo', $info);
         $this->display();
@@ -186,13 +131,13 @@ class ArticleAction extends BaseAction
         $model->router_id = $router_id;
         $model->startTrans();
 
-        $ins = $model->add();   //写入文章表
+        $ins = $model->add(); //写入文章表
 
-        $add_router = $this->saveRouter($ins, $router_id, $link, 1);    //写入路由表
-        $tag_id = $this->saveTag($tag);     //写入Tag表
-        $save_map = $this->saveTagMap($tag_id, $ins);   //写入对应关系表
+        $add_router = $this->saveRouter($ins, $router_id, $link, 1); //写入路由表
+        $tag_id = $this->saveTag($tag); //写入Tag表
+        $save_map = $this->saveTagMap($tag_id, $ins); //写入对应关系表
 
-        if ($ins !== false && $tag_id !==false && $save_map !== false && $add_router !== false) {
+        if ($ins !== false && $tag_id !== false && $save_map !== false && $add_router !== false) {
             $model->commit();
             $this->success('新增成功', U('Article/index'));
         } else {
@@ -233,11 +178,11 @@ class ArticleAction extends BaseAction
 
         $model->startTrans();
 
-        $ins = $model->where($map)->save();     //更新主表
+        $ins = $model->where($map)->save(); //更新主表
 
-        $tag_id = $this->saveTag($tag);         //更新标签表
-        $save_map = $this->saveTagMap($tag_id, $id);    //更新文章标签对应表
-        $update_router = $this->saveRouter($id, $router_id, $link, 2);  //更新路由表
+        $tag_id = $this->saveTag($tag); //更新标签表
+        $save_map = $this->saveTagMap($tag_id, $id); //更新文章标签对应表
+        $update_router = $this->saveRouter($id, $router_id, $link, 2); //更新路由表
 
         if ($ins !== false && $tag_id !== false && $save_map !== false && $update_router !== false) {
             $model->commit();
@@ -270,13 +215,13 @@ class ArticleAction extends BaseAction
 
         $info = $model->_get($map);
 
-        $model->startTrans();   //开启事务
+        $model->startTrans(); //开启事务
 
-        $del_article = $model->delete($id);    //删除文章表
+        $del_article = $model->delete($id); //删除文章表
 
-        $del_router = D('Router')->where(array('id' => $info['router_id']))->delete();  //删除路由表
+        $del_router = D('Router')->where(array('id' => $info['router_id']))->delete(); //删除路由表
 
-        $del_map = D('ArticleTagMap')->where(array('article_id' => $id))->delete();     //删除标签文章对应表
+        $del_map = D('ArticleTagMap')->where(array('article_id' => $id))->delete(); //删除标签文章对应表
 
         if ($del_article !== false && $del_router !== false && $del_map !== false) {
             $model->commit();
@@ -398,8 +343,8 @@ class ArticleAction extends BaseAction
      */
     private function saveRouter($article_id, $router_id, $link = '', $type = 1)
     {
-        $rule = !empty($link) ? $link : 'article/'.$article_id;
-        $link = 'Article/index?id='.$article_id;
+        $rule = !empty($link) ? $link : 'article/' . $article_id;
+        $link = 'Article/index?id=' . $article_id;
 
         $model = D('Router');
         if ($type == 1) {

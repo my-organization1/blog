@@ -1,4 +1,2 @@
 <?php
-require_once('./Data/function.php');
-
-
+require_once './Data/function.php';

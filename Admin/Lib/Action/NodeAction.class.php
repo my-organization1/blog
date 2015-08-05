@@ -14,7 +14,6 @@ class NodeAction extends BaseAction
 
         $list = $model->lists();
         $this->assign('node_list', $list);
-
     }
 
     public function _before_edit()
