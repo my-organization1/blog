@@ -9,7 +9,7 @@ class CatalogModel extends BaseModel
      * @param  int $catalog_id 分类主键id
      * @return array           分类的信息
      */
-    public function info($catalog_id)
+    public function get($catalog_id)
     {
         $map['id'] = $catalog_id;
         $field = 'id,pid,router_id,name,sort,title,keywords,description,is_show,list_tpl,content_tpl';

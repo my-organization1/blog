@@ -11,32 +11,95 @@ class ArticleAction extends BaseAction
     {
         $article_id = I('id');
 
-        $map['id'] = $article_id;
-        $field = 'id,catalog_id,router_id,title,content,writer,source,view_count,thumb,create_time';
+        $this->addViewCount($article_id); //文章浏览数+1
 
-        $article_info = D('Article')->_get($map, $field);
+        $article_info = D('Article')->get($article_id); //获取文章信息
 
-        //获取栏目信息
-        $catalog_map['id'] = $article_info['catalog_id'];
-        $catalog_field = 'id,pid,router_id,name,sort,title,keywords,description,is_show,list_tpl,content_tpl';
-        $catalog_info = D('Catalog')->_get($catalog_map, $catalog_field);
+        $catalog_info = D('Catalog')->get($article_info['catalog_id']); //获取分类详情
 
-        //获取关键词
-        $tag_list = D('Tag')->getListByArticleId($article_id);
+        $tag_list = D('Tag')->getListByArticleId($article_id); //获取文章关键词
 
-        //查询路由信息
-        $router_id[] = $article_info['router_id'];
-        $router_id[] = $catalog_info['router_id'];
+        $prev_article_info = $this->getPrevArticle($article_id); //获取上一篇文章
+        $next_article_info = $this->getNextArticle($article_id); //获取下一篇文章
 
-        $router_list = D('Router')->lists($router_id);
-        //拼合路由数据
-        $article_info = array_merge($article_info, $router_list[$article_info['router_id']]);
-        $catalog_info = array_merge($catalog_info, $router_list[$catalog_info['router_id']]);
+        $click_article_list = D('Article')->listsByCatalogId($id, 'view_count desc', 1, 9); //获取点击排行文章
+
+        $relevant_artilce_list = $this->getRelevantArticleList($tag_list);
 
         $this->assign('article_info', $article_info);
+        $this->assign('prev_article_info', $prev_article_info);
+        $this->assign('next_article_info', $next_article_info);
         $this->assign('catalog_info', $catalog_info);
         $this->assign('tag_list', $tag_list);
+        $this->assign('click_article_list', $click_article_list);
+        $this->assign('relevant_artilce_list', $relevant_artilce_list);
 
-        $this->display(C('APP_DEFAULT_THEME').'/'.$catalog_info['content_tpl']);
+        $this->display(C('APP_DEFAULT_THEME') . '/' . $catalog_info['content_tpl']);
+    }
+
+    /**
+     * 文章浏览数+1
+     * @param int $id 文章id
+     */
+    private function addViewCount($id)
+    {
+        $map['id'] = $id;
+
+        $data['view_count'] = array('exp', 'view_count+1');
+
+        $result = D('Article')->where($map)->save($data);
+
+        return $result;
+    }
+    /**
+     * 获取上一篇文章
+     * @param  int $id 当前文章id
+     * @return array     查询到的数据
+     */
+    private function getPrevArticle($id)
+    {
+        $map['id'] = array('lt', $id);
+        $order = 'id desc';
+        $prev_article_info = D('Article')->get($map, $order);
+
+        $prev_article_info = empty($prev_article_info) ? array() : $prev_article_info;
+        return $prev_article_info;
+    }
+    /**
+     * 获取下一篇文章
+     * @param  int $id 当前文章id
+     * @return array   查询到的数据
+     */
+    private function getNextArticle($id)
+    {
+        $map['id'] = array('gt', $id);
+        $next_article_info = D('Article')->get($map);
+
+        $next_article_info = empty($next_article_info) ? array() : $next_article_info;
+        return $next_article_info;
+    }
+
+    /**
+     * 获取相关文章
+     * @param  array $tag_list 标签列表
+     * @return array           查询出的数据
+     */
+    private function getRelevantArticleList($tag_list)
+    {
+        $tag_id = array_column($tag_list, 'id');
+        $map['tag_id'] = $tag_id;
+        $article_list = D('ArticleTagMap')->_list($map, 'article_id', 'id desc', 1, 5);
+
+        if ($article_list) {
+            return array();
+        }
+
+        $article_id = array_column($article_list, 'article_id');
+
+        $where['id'] = array('in', $article_id);
+
+        $article_list = D('Article')->lists($where);
+
+        return $article_list;
     }
 }

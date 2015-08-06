@@ -14,12 +14,16 @@ class CatalogAction extends BaseAction
         $page = intval(I('page', 1));
         $page_size = intval(I('page_size', 10));
         //获取栏目信息
-        $info = D('Catalog')->info($id);
+        $info = D('Catalog')->get($id);
         //获取文章信息
-        $article_list = D('Article')->lists($id, '', $page, $page_size);
+        $article_list = D('Article')->listsByCatalogId($id, '', $page, $page_size);
 
         $count = $article_list['count'];
         unset($article_list['count']);
+
+        //获取点击排行文章
+        $click_article_list = D('Article')->listsByCatalogId($id, 'view_count desc', 1, 9);
+
         //分页处理
         $PageHelper = new PageHelper($count, $page, $page_size);
         $page_list = $PageHelper->show();
@@ -34,6 +38,7 @@ class CatalogAction extends BaseAction
         //赋值
         $this->assign('catalog_info', $info);
         $this->assign('article_list', $article_list);
+        $this->assign('click_article_list', $click_article_list);
         $this->assign('count', $count);
         $this->assign('page_list', $page_list);
 

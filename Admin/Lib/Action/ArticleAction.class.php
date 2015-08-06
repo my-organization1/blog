@@ -122,6 +122,7 @@ class ArticleAction extends BaseAction
 
         $tag = I('tag', '');
         $link = I('post.link');
+        $content = I('post.content');
         if (empty($tag)) {
             $this->error('请输入文章标签');
         }
@@ -129,6 +130,7 @@ class ArticleAction extends BaseAction
         $router_id = D('Router')->getInsId();
         $model->admin_id = 1;
         $model->router_id = $router_id;
+        $model->description = !empty(strip_tags($content)) ? msubstr(strip_tags($content), 0, 200) : null;
         $model->startTrans();
 
         $ins = $model->add(); //写入文章表
@@ -169,12 +171,15 @@ class ArticleAction extends BaseAction
         $id = I('post.id');
         $tag = I('tag', '');
         $link = I('post.link');
+        $content = I('post.content');
         if (empty($tag)) {
             $this->error('请输入文章标签');
         }
 
         $map['id'] = $id;
         $router_id = $model->where($map)->getField('router_id');
+
+        $model->description = !empty(strip_tags($content)) ? msubstr(strip_tags($content), 0, 200) : null; //补充描述
 
         $model->startTrans();
 

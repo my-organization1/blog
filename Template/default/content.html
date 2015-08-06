@@ -3,9 +3,9 @@
 <html>
 <head>
 <meta charset="gb2312">
-<title>黑色Html5响应式个人博客模板——主题《如影随形》</title>
-<meta name="keywords" content="个人博客模板,博客模板,响应式" />
-<meta name="description" content="如影随形主题的个人博客模板，神秘、俏皮。" />
+<title>{$article_info.title}</title>
+<meta name="keywords" content="{$tag_list}" />
+<meta name="description" content="{$article_info.description}" />
 <link href="{:C('TMPL_PATH')}/css/base.css" rel="stylesheet">
 <link href="{:C('TMPL_PATH')}/css/style.css" rel="stylesheet">
 <link href="{:C('TMPL_PATH')}/css/media.css" rel="stylesheet">
@@ -17,7 +17,7 @@
 </head>
 <body>
 <div class="ibody">
-<include file="./Template/default/header.html" />
+<include file="./Template/{:C('APP_DEFAULT_THEME')}/header.html" />
   <article>
     <h2 class="about_h">您现在的位置是：<a href="/">首页</a>><a href="{:U('/'.$catalog_info['url'])}">{$catalog_info['name']}</a>><a href="__SELF__">{$article_info.title}</a></h2>
     <div class="index_about">
@@ -29,23 +29,20 @@
       <div class="keybq">
         <p><span>关键字词</span>：
         <volist name="tag_list" id="tag_vo">
-          <a href="">{$tag_vo.name}</a>,
+          <a href="{:U('Search/index',array('q'=>$tag_vo['name']))}">{$tag_vo.name}</a>,
         </volist>
         </p>
       </div>
       <div class="nextinfo">
-        <p>上一篇：<a href="/news/s/2013-09-04/606.html">程序员应该如何高效的工作学习</a></p>
-        <p>下一篇：<a href="/news/s/2013-10-21/616.html">柴米油盐的生活才是真实</a></p>
+        <p>上一篇：<a href="{:U('/'.$prev_article_info['url'])}">{$prev_article_info.title}</a></p>
+        <p>下一篇：<a href="{:U('/'.$next_article_info['url'])}">{$next_article_info.title}</a></p>
       </div>
       <div class="otherlink">
         <h2>相关文章</h2>
         <ul>
-          <li><a href="/news/s/2013-07-25/524.html" title="现在，我相信爱情！">现在，我相信爱情！</a></li>
-          <li><a href="/newstalk/mood/2013-07-24/518.html" title="我希望我的爱情是这样的">我希望我的爱情是这样的</a></li>
-          <li><a href="/newstalk/mood/2013-07-02/335.html" title="有种情谊，不是爱情，也算不得友情">有种情谊，不是爱情，也算不得友情</a></li>
-          <li><a href="/newstalk/mood/2013-07-01/329.html" title="世上最美好的爱情">世上最美好的爱情</a></li>
-          <li><a href="/news/read/2013-06-11/213.html" title="爱情没有永远，地老天荒也走不完">爱情没有永远，地老天荒也走不完</a></li>
-          <li><a href="/news/s/2013-06-06/24.html" title="爱情的背叛者">爱情的背叛者</a></li>
+          <volist name="relevant_artilce_list" id="relevant_artilce_vo">
+              <li><a href="{:U('/'.$relevant_artilce_vo['url'])}" title="现在，我相信爱情！">{$relevant_artilce_vo.title}</a></li>
+          </volist>
         </ul>
       </div>
     </div>
@@ -56,29 +53,12 @@
         <p>点击排行</p>
       </h2>
       <ul class="ph_n">
-        <li><span class="num1">1</span><a href="/">有一种思念，是淡淡的幸福,一个心情一行文字</a></li>
-        <li><span class="num2">2</span><a href="/">励志人生-要做一个潇洒的女人</a></li>
-        <li><span class="num3">3</span><a href="/">女孩都有浪漫的小情怀——浪漫的求婚词</a></li>
-        <li><span>4</span><a href="/">Green绿色小清新的夏天-个人博客模板</a></li>
-        <li><span>5</span><a href="/">女生清新个人博客网站模板</a></li>
-        <li><span>6</span><a href="/">Wedding-婚礼主题、情人节网站模板</a></li>
-        <li><span>7</span><a href="/">Column 三栏布局 个人网站模板</a></li>
-        <li><span>8</span><a href="/">时间煮雨-个人网站模板</a></li>
-        <li><span>9</span><a href="/">花气袭人是酒香—个人网站模板</a></li>
-      </ul>
-      <h2>
-        <p>栏目推荐</p>
-      </h2>
-      <ul>
-        <li><a href="/">有一种思念，是淡淡的幸福,一个心情一行文字</a></li>
-        <li><a href="/">励志人生-要做一个潇洒的女人</a></li>
-        <li><a href="/">女孩都有浪漫的小情怀——浪漫的求婚词</a></li>
-        <li><a href="/">Green绿色小清新的夏天-个人博客模板</a></li>
-        <li><a href="/">女生清新个人博客网站模板</a></li>
-        <li><a href="/">Wedding-婚礼主题、情人节网站模板</a></li>
-        <li><a href="/">Column 三栏布局 个人网站模板</a></li>
-        <li><a href="/">时间煮雨-个人网站模板</a></li>
-        <li><a href="/">花气袭人是酒香—个人网站模板</a></li>
+        <volist name="click_article_list" id="click_article_vo">
+        <if condition="$i lt 4">
+          <li><span class="num{$i}">{$i}</span><a href="{:U('/'.$click_article_vo['url'])}">{$click_article_vo.title}</a></li>
+        <else />
+          <li><span>{$i}</span><a href="{:U('/'.$click_article_vo['url'])}"{$click_article_vo.title}</a></li>
+        </if>
       </ul>
     </div>
     <div class="copyright">

@@ -28,17 +28,17 @@
       <div class="navbar-inverse">
         <form class="navbar-search visible-phone">
           <input type="text" class="search-query" placeholder="Search" />
-        </form>
-      </div>
-      <!-- END RESPONSIVE QUICK SEARCH FORM -->
-      <!-- BEGIN SIDEBAR MENU -->
-      <include file="Public/menu" />
-      <!-- END SIDEBAR MENU -->
-    </div>
+      </form>
   </div>
-  <!-- END SIDEBAR -->
-  <!-- BEGIN PAGE -->
-  <div id="main-content">
+  <!-- END RESPONSIVE QUICK SEARCH FORM -->
+  <!-- BEGIN SIDEBAR MENU -->
+  <include file="Public/menu" />
+  <!-- END SIDEBAR MENU -->
+</div>
+</div>
+<!-- END SIDEBAR -->
+<!-- BEGIN PAGE -->
+<div id="main-content">
    <!-- BEGIN PAGE CONTAINER-->
    <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->
@@ -47,26 +47,26 @@
       <!-- BEGIN PAGE TITLE & BREADCRUMB-->
       <h3 class="page-title">
        文章管理
-     </h3>
-     <ul class="breadcrumb">
+   </h3>
+   <ul class="breadcrumb">
        <li>
          <a href="{:U('/')}">后台首页</a>
          <span class="divider">/</span>
-       </li>
-       <li>
+     </li>
+     <li>
          <a href="{:U('Article/index')}">文章列表</a>
          <span class="divider">/</span>
-       </li>
-       <li>
+     </li>
+     <li>
          <a href="__SELF__">新增文章</a>
-       </li>
-     </ul>
-     <!-- END PAGE TITLE & BREADCRUMB-->
-   </div>
- </div>
- <!-- END PAGE HEADER-->
- <!-- BEGIN PAGE CONTENT-->
- <div class="row-fluid">
+     </li>
+ </ul>
+ <!-- END PAGE TITLE & BREADCRUMB-->
+</div>
+</div>
+<!-- END PAGE HEADER-->
+<!-- BEGIN PAGE CONTENT-->
+<div class="row-fluid">
   <div class="span12">
     <!-- BEGIN BASIC PORTLET-->
     <div class="widget">
@@ -75,81 +75,87 @@
         <span class="tools">
           <a href="javascript:;" class="icon-chevron-down"></a>
           <a href="javascript:;" class="icon-remove"></a>
-        </span>
-      </div>
-      <div class="widget-body">
-        <form action="{:U('save')}" class="form-horizontal" method="post" validate enctype="multipart/form-data">
-          <div class="control-group">
-            <label class="control-label">文章标题:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="title" data-rule-required="1" data-msg-required="请输入文章标题">
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">访问链接:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="link" data-rule-required="1">
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">标签:</label>
-            <div class="controls">
-              <input type="text" class="span6" name="tag" data-rule-required="1" data-msg-required="请输入文章标签">
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">所属分类:</label>
-            <div class="controls">
-              <select class="span6 chzn-select" data-placeholder="选择分类" tabindex="1" name="catalog_id">
-                <volist name="catalog_list" id="catalog_vo">
-                  <option value="{$catalog_vo.id}">{:str_repeat('━', $catalog_vo['_level'])}{$catalog_vo.name}</option>
-                </volist>
-              </select>
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">缩略图:</label>
-            <div class="controls">
-              <div data-provides="fileupload" class="fileupload fileupload-new">
-                <div style="width: 200px; height: 150px;" class="fileupload-new thumbnail">
-                  <img alt="" src="__PUBLIC__/img/no_image.png" width="200px" data-preview="thumb">
-                </div>
-                <div style="max-width: 200px; max-height: 150px; line-height: 20px;" class="fileupload-preview fileupload-exists thumbnail"></div>
-                <div>
-                <span class="btn btn-file"><span class="fileupload-new" >Select image</span>
-                  <input type="file" class="default" id="upfile" data-input="thumb" name="upfile" onchange="uploadImg(this)">
-                 </span>
-               </div>
-               <input type="hidden" class="span6" name="thumb" id="thumb">
-             </div>
-           </div>
-         </div>
-         <div class="control-group">
-          <label class="control-label">作者:</label>
-          <div class="controls">
-            <input type="text" class="span6" name="writer" data-rule-required="1" data-msg-required="请输入作者">
-          </div>
-        </div>
-        <div class="control-group">
-          <label class="control-label">来源:</label>
-          <div class="controls">
-            <input type="text" class="span6" name="source" data-rule-required="1" data-msg-required="请输入文章来源">
-          </div>
-        </div>
-        <div class="control-group">
-          <label class="control-label">文章内容:</label>
-          <div class="controls">
-            <textarea name="content" class="span10" id="editor1" cols="30" rows="10" editor></textarea>
-          </div>
-        </div>
-        <div class="form-actions">
-          <input type="submit" value="提交" class="btn btn-success">
-          <input type="reset" value="重置" class="btn">
-        </div>
-      </form>
-    </div>
+      </span>
   </div>
-  <!-- END BASIC PORTLET-->
+  <div class="widget-body">
+    <form action="{:U('save')}" class="form-horizontal" method="post" validate enctype="multipart/form-data">
+      <div class="control-group">
+        <label class="control-label">文章标题:</label>
+        <div class="controls">
+          <input type="text" class="span6" name="title" data-rule-required="1" data-msg-required="请输入文章标题">
+      </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">访问链接:</label>
+    <div class="controls">
+      <input type="text" class="span6" name="link" data-rule-required="1">
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">文章描述:</label>
+  <div class="controls">
+    <textarea name="description" class="span10"  cols="30" rows="10"></textarea>
+</div>
+</div>
+<div class="control-group">
+    <label class="control-label">标签:</label>
+    <div class="controls">
+      <input type="text" class="span6" name="tag" data-rule-required="1" data-msg-required="请输入文章标签">
+  </div>
+</div>
+<div class="control-group">
+    <label class="control-label">所属分类:</label>
+    <div class="controls">
+      <select class="span6 chzn-select" data-placeholder="选择分类" tabindex="1" name="catalog_id">
+        <volist name="catalog_list" id="catalog_vo">
+          <option value="{$catalog_vo.id}">{:str_repeat('━', $catalog_vo['_level'])}{$catalog_vo.name}</option>
+      </volist>
+  </select>
+</div>
+</div>
+<div class="control-group">
+    <label class="control-label">缩略图:</label>
+    <div class="controls">
+      <div data-provides="fileupload" class="fileupload fileupload-new">
+        <div style="width: 200px; height: 150px;" class="fileupload-new thumbnail">
+          <img alt="" src="__PUBLIC__/img/no_image.png" width="200px" data-preview="thumb">
+      </div>
+      <div style="max-width: 200px; max-height: 150px; line-height: 20px;" class="fileupload-preview fileupload-exists thumbnail"></div>
+      <div>
+        <span class="btn btn-file"><span class="fileupload-new" >Select image</span>
+        <input type="file" class="default" id="upfile" data-input="thumb" name="upfile" onchange="uploadImg(this)">
+    </span>
+</div>
+<input type="hidden" class="span6" name="thumb" id="thumb">
+</div>
+</div>
+</div>
+<div class="control-group">
+  <label class="control-label">作者:</label>
+  <div class="controls">
+    <input type="text" class="span6" name="writer" data-rule-required="1" data-msg-required="请输入作者">
+</div>
+</div>
+<div class="control-group">
+  <label class="control-label">来源:</label>
+  <div class="controls">
+    <input type="text" class="span6" name="source" data-rule-required="1" data-msg-required="请输入文章来源">
+</div>
+</div>
+<div class="control-group">
+  <label class="control-label">文章内容:</label>
+  <div class="controls">
+    <textarea name="content" class="span10" id="editor1" cols="30" rows="10" editor></textarea>
+</div>
+</div>
+<div class="form-actions">
+  <input type="submit" value="提交" class="btn btn-success">
+  <input type="reset" value="重置" class="btn">
+</div>
+</form>
+</div>
+</div>
+<!-- END BASIC PORTLET-->
 </div>
 </div>
 <!-- END PAGE CONTENT-->
