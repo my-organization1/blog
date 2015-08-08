@@ -17,7 +17,7 @@
 </head>
 <body>
 <div class="ibody">
-<include file="./Template/{:C('APP_DEFAULT_THEME')}/header.html" />
+<include file="./Template/default/header.html" />
   <article>
     <h2 class="about_h">您现在的位置是：<a href="/">首页</a>><a href="{:U('/'.$catalog_info['url'])}">{$catalog_info['name']}</a>><a href="__SELF__">{$article_info.title}</a></h2>
     <div class="index_about">
@@ -29,13 +29,25 @@
       <div class="keybq">
         <p><span>关键字词</span>：
         <volist name="tag_list" id="tag_vo">
-          <a href="{:U('Search/index',array('q'=>$tag_vo['name']))}">{$tag_vo.name}</a>,
+          <a href="{:U('Search/'.$tag_vo['name'])}">{$tag_vo.name}</a>,
         </volist>
         </p>
       </div>
       <div class="nextinfo">
-        <p>上一篇：<a href="{:U('/'.$prev_article_info['url'])}">{$prev_article_info.title}</a></p>
-        <p>下一篇：<a href="{:U('/'.$next_article_info['url'])}">{$next_article_info.title}</a></p>
+        <p>上一篇：
+        <if condition="empty($prev_article_info)">
+          暂无文章
+        <else />
+          <a href="{:U('/'.$prev_article_info['url'])}">{$prev_article_info.title}</a>
+        </if>
+        </p>
+        <p>下一篇：
+        <if condition="empty($next_article_info)">
+          暂无文章
+        <else />
+          <a href="{:U('/'.$next_article_info['url'])}">{$next_article_info.title}</a>
+        </if>
+        </p>
       </div>
       <div class="otherlink">
         <h2>相关文章</h2>
@@ -54,11 +66,12 @@
       </h2>
       <ul class="ph_n">
         <volist name="click_article_list" id="click_article_vo">
-        <if condition="$i lt 4">
-          <li><span class="num{$i}">{$i}</span><a href="{:U('/'.$click_article_vo['url'])}">{$click_article_vo.title}</a></li>
-        <else />
-          <li><span>{$i}</span><a href="{:U('/'.$click_article_vo['url'])}"{$click_article_vo.title}</a></li>
-        </if>
+          <if condition="$i lt 4">
+            <li><span class="num{$i}">{$i}</span><a href="{:U('/'.$click_article_vo['url'])}">{$click_article_vo.title}</a></li>
+          <else />
+            <li><span>{$i}</span><a href="{:U('/'.$click_article_vo['url'])}"{$click_article_vo.title}</a></li>
+          </if>
+        </volist>
       </ul>
     </div>
     <div class="copyright">

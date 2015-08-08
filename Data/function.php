@@ -18,6 +18,24 @@ function RestoreRule($rule)
     return $rule;
 }
 
+//返回图片绝对路径
+function realImgPath($path)
+{
+    return __ROOT__.ltrim($path,'.');
+}
+//清除html,空格,换行
+function strip_html($str)
+{
+    $str = trim($str);
+    $str = strip_tags($str, "");
+    $str = ereg_replace("\t", "", $str);
+    $str = ereg_replace("\r\n", "", $str);
+    $str = ereg_replace("\r", "", $str);
+    $str = ereg_replace("\n", "", $str);
+    $str = ereg_replace(" ", " ", $str);
+    return trim($str);
+}
+
 //兼容低版本array_column函数
 if (!function_exists('array_column')) {
     function array_column(array $array, $columnKey, $indexKey = null)

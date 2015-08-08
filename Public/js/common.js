@@ -143,7 +143,7 @@ function uploadImg(dom){
         dataType: 'json',
         success: function (i) {
             if (i.status == 1) {
-                preview.attr('src', i.info);
+                preview.attr('src', i.show_path);
                 input.attr('value', i.info);
             } else {
                 showAlert('发生错误了', i.info);

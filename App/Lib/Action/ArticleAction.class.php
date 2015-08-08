@@ -20,10 +20,10 @@ class ArticleAction extends BaseAction
         $tag_list = D('Tag')->getListByArticleId($article_id); //获取文章关键词
 
         $prev_article_info = $this->getPrevArticle($article_id); //获取上一篇文章
+
         $next_article_info = $this->getNextArticle($article_id); //获取下一篇文章
 
-        $click_article_list = D('Article')->listsByCatalogId($id, 'view_count desc', 1, 9); //获取点击排行文章
-
+        $click_article_list = D('Article')->listsByCatalogId($article_info['catalog_id'], 'view_count desc', 1, 9); //获取点击排行文章
         $relevant_artilce_list = $this->getRelevantArticleList($tag_list);
 
         $this->assign('article_info', $article_info);
@@ -61,8 +61,8 @@ class ArticleAction extends BaseAction
         $map['id'] = array('lt', $id);
         $order = 'id desc';
         $prev_article_info = D('Article')->get($map, $order);
-
         $prev_article_info = empty($prev_article_info) ? array() : $prev_article_info;
+
         return $prev_article_info;
     }
     /**
@@ -74,7 +74,6 @@ class ArticleAction extends BaseAction
     {
         $map['id'] = array('gt', $id);
         $next_article_info = D('Article')->get($map);
-
         $next_article_info = empty($next_article_info) ? array() : $next_article_info;
         return $next_article_info;
     }
@@ -86,15 +85,17 @@ class ArticleAction extends BaseAction
      */
     private function getRelevantArticleList($tag_list)
     {
+
         $tag_id = array_column($tag_list, 'id');
-        $map['tag_id'] = $tag_id;
+
+        $map['tag_id'] = array('in', $tag_id);
         $article_list = D('ArticleTagMap')->_list($map, 'article_id', 'id desc', 1, 5);
 
-        if ($article_list) {
+        if (empty($article_list)) {
             return array();
         }
-
         $article_id = array_column($article_list, 'article_id');
+        $article_list = array_unique($article_id);
 
         $where['id'] = array('in', $article_id);
 

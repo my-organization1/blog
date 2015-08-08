@@ -31,10 +31,11 @@ class PublicAction extends BaseAction
         }
 
         $fileinfo = $upload->getUploadFileInfo();
-        $filepath = __ROOT__.ltrim($fileinfo[0]['savepath'].$fileinfo[0]['savename'], '.');
+        $filepath =$fileinfo[0]['savepath'].$fileinfo[0]['savename'];
 
         $info['status'] = 1;
         $info['info'] = $filepath;
+        $info['show_path'] = __ROOT__ . ltrim($filepath, '.');
         die(json_encode($info));
     }
 }

@@ -12,8 +12,7 @@ class ArticleModel extends BaseModel
      */
     public function listsByCatalogId($catalog_id = '', $order = '', $page = 1, $page_size = 10)
     {
-        $map = array();
-        if (empty($catalog_id)) {
+        if (!empty($catalog_id)) {
             $map['catalog_id'] = $catalog_id;
         }
 
@@ -27,18 +26,22 @@ class ArticleModel extends BaseModel
      * @param  integer $page_size  每页条数
      * @return array               查询出来的数据
      */
-    public function lists($map = '', $order = '', $page = 1, $page_size = 10)
+    public function lists($map = array(), $order = '', $page = 1, $page_size = 10)
     {
-        if (empty($catalog_id)) {
-            $map['catalog_id'] = $catalog_id;
-        }
-        $order = empty($order) ? 'create_time desc' : $order . ' desc';
-        $field = 'id,catalog_id,router_id,title,writer,source,view_count,thumb,create_time';
+
+        $order = empty($order) ? 'create_time desc' : $order ;
+        $field = 'id,catalog_id,router_id,title,description,writer,source,view_count,thumb,create_time';
 
         $list = $this->_list($map, $field, $order, $page, $page_size);
 
         if (empty($list)) {
             return array();
+        }
+        //处理缩略图
+        foreach ($list as $_k => $_v) {
+            if (empty($_v['thumb']) || !is_file($_v['thumb'])) {
+                $list[$_k]['thumb'] = TMPL_PATH.'/'.C('APP_DEFAULT_THEME').'/images/default-thumb.jpg';
+            }
         }
         //文章访问路由
         $router_id = array_column($list, 'router_id');
@@ -48,7 +51,6 @@ class ArticleModel extends BaseModel
         foreach ($list as $_k => $_v) {
             $list[$_k] = array_merge($_v, $router_list[$_v['router_id']]);
         }
-        $list['count'] = $count;
 
         return $list;
     }
@@ -60,15 +62,19 @@ class ArticleModel extends BaseModel
      */
     public function get($id, $order = '')
     {
-        $map['id'] = $article_id;
-        $field = 'id,catalog_id,router_id,title,content,writer,source,view_count,thumb,create_time';
+        if (is_numeric($id)) {
+            $map['id'] = $id;
+        } else {
+            $map = $id;
+        }
+
+        $field = 'id,catalog_id,router_id,title,description,content,writer,source,view_count,thumb,create_time';
 
         $article_info = $this->_get($map, $field, $order);
 
-        if (empty($artilce_info)) {
+        if (empty($article_info)) {
             return array();
         }
-
         //查询路由信息
         $router_id[] = $article_info['router_id'];
 

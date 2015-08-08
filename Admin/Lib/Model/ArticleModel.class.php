@@ -42,7 +42,6 @@ class ArticleModel extends BaseModel
      */
     public function lists($map = array(), $order = '', $page = 1, $page_size = 10)
     {
-        $map = $this->_filter();
         $list = $this->_list($map, $this->_select_field, $order, $page, $page_size);
 
         if (empty($list)) {
@@ -95,7 +94,7 @@ class ArticleModel extends BaseModel
     public function get($id)
     {
         $map['id'] = $id;
-        $info = $this->_get($map, $this->_select_field);
+        $info = $this->_get($map);
 
         //查询链接
         $router_map['id'] = $info['router_id'];
@@ -106,12 +105,11 @@ class ArticleModel extends BaseModel
         $info = array_merge($info, $router_list[$info['router_id']]);
 
         //查询标签TagId
-        $article_id = $id;
+        unset($map);
         $map['article'] = $article_id;
 
         $tag_id_list = D('ArticleTagMap')->_list($map, 'tag_id', 'tag_id asc');
         $tag_id_list = array_column($tag_id_list, 'tag_id');
-
         //查询标签名称
         $tag_map['id'] = array('in', $tag_id_list);
         $tag_map['is_enable'] = 1;
